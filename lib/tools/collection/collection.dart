@@ -375,6 +375,14 @@ void registerRestCollectionTools(McpServer server, ReqableApiClient client) {
       },
       required: ['collectionId', 'id'],
     ),
+    outputSchema: ToolOutputSchema(
+      title: 'API Details',
+      description: 'The HTTP or WebSocket API details returned by Reqable.',
+      properties: {
+        'api': kCollectionApiSchema,
+      },
+      required: ['api'],
+    ),
 		callback: (args, extra) {
 			final CallToolResult? collectionIdValidationError = validateRequiredStringArgument(
         args,
@@ -399,9 +407,9 @@ void registerRestCollectionTools(McpServer server, ReqableApiClient client) {
 		},
 	);
 	server.registerTool(
-		'collection_http_create',
-		title: 'Create HTTP API into Collection From cURL',
-		description: 'Create a new HTTP API in a Reqable collection from a cURL command.',
+		'collection_api_create',
+		title: 'Create API into Collection From cURL',
+		description: 'Create a new API in a Reqable collection from a cURL command.',
 		annotations: ToolAnnotations(
 			readOnlyHint: false,
 			destructiveHint: false,
@@ -419,7 +427,14 @@ void registerRestCollectionTools(McpServer server, ReqableApiClient client) {
 			},
 			required: ['collectionId', 'curl'],
 		),
-		outputSchema: kRestHttpSchema,
+    outputSchema: ToolOutputSchema(
+      title: 'API Details',
+      description: 'The HTTP or WebSocket API details returned by Reqable.',
+      properties: {
+        'api': kCollectionApiSchema,
+      },
+      required: ['api'],
+    ),
 		callback: (args, extra) {
 			final CallToolResult? collectionIdValidationError = validateRequiredStringArgument(
 				args,
@@ -460,9 +475,17 @@ void registerRestCollectionTools(McpServer server, ReqableApiClient client) {
 					title: 'Parent Folder ID',
 					description: 'Optional parent folder ID.',
 				),
-        'api': _kCollectionApiSchema,
+        'api': kCollectionApiSchema,
       },
       required: ['collectionId', 'api'],
+    ),
+    outputSchema: ToolOutputSchema(
+      title: 'API Details',
+      description: 'The HTTP or WebSocket API details returned by Reqable.',
+      properties: {
+        'api': kCollectionApiSchema,
+      },
+      required: ['api'],
     ),
 		callback: (args, extra) {
       final CallToolResult? collectionIdValidationError = validateRequiredStringArgument(
@@ -500,7 +523,7 @@ void registerRestCollectionTools(McpServer server, ReqableApiClient client) {
       description: 'The collection ID and the HTTP or WebSocket API payload.',
       properties: {
         'collectionId': _kCollectionIdScheme,
-        'api': _kCollectionApiSchema,
+        'api': kCollectionApiSchema,
       },
       required: ['collectionId', 'api'],
     ),
@@ -793,7 +816,7 @@ final JsonObject _kFolderPropertiesSchema = ToolOutputSchema(
 	additionalProperties: true,
 );
 
-const JsonSchema _kCollectionApiSchema = JsonOneOf(
+const JsonSchema kCollectionApiSchema = JsonOneOf(
   [
     kRestHttpSchema,
     kRestWebSocketSchema,

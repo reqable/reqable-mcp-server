@@ -1,5 +1,6 @@
 import 'package:mcp_dart/mcp_dart.dart';
 import 'package:reqable_mcp_server/api/client.dart';
+import 'package:reqable_mcp_server/tools/collection/collection.dart';
 import 'package:reqable_mcp_server/tools/rest/http.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
@@ -175,6 +176,14 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client) {
       required: ['curl'],
     ),
     callback: (args, extra) {
+      final CallToolResult? validationError = validateRequiredIntArgument(
+				args,
+				key: 'id',
+				minimum: 0,
+			);
+			if (validationError != null) {
+				return validationError;
+			}
       return buildContentResult(
         apiCall: () => service.generateCurl(args),
         contentBuilder: (_) {
@@ -201,10 +210,78 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client) {
 		),
 		outputSchema: _kCaptureLiveComposeResultSchema,
 		callback: (args, extra) {
+      final CallToolResult? validationError = validateRequiredIntArgument(
+				args,
+				key: 'id',
+				minimum: 0,
+			);
+			if (validationError != null) {
+				return validationError;
+			}
 			return buildContentResult(
 				apiCall: () => service.compose(args),
 				contentBuilder: (_) {
 					return 'Successfully composed the live capture record into a new Reqable tab.';
+				},
+			);
+		},
+	);
+  server.registerTool(
+		'capture_live_collection_add',
+		title: 'Add Live Capture Record to Collection',
+		description: 'Add a completed live capture record to an existing collection in Reqable and return the created API.',
+		annotations: ToolAnnotations(
+			readOnlyHint: false,
+			destructiveHint: false,
+			idempotentHint: false,
+		),
+		inputSchema: const ToolInputSchema(
+			description: 'Provide the numeric live capture record ID to add to an existing collection.',
+			properties: {
+				'id': _kCaptureLiveIdSchema,
+        'collectionId': JsonString(
+          title: 'Collection ID',
+          description: 'The Reqable unique collection identifier.',
+        ),
+        'parentId': JsonString(
+					title: 'Parent Folder ID',
+					description: 'Optional parent folder ID.',
+				),
+        'name': JsonString(
+          title: 'API Name',
+          description: 'Optional name for the created API.',
+        ),
+			},
+			required: ['id', 'collectionId'],
+		),
+    outputSchema: ToolOutputSchema(
+      title: 'API Details',
+      description: 'The HTTP or WebSocket API details returned by Reqable.',
+      properties: {
+        'api': kCollectionApiSchema,
+      },
+      required: ['api'],
+    ),
+		callback: (args, extra) {
+      final CallToolResult? idValidationError = validateRequiredIntArgument(
+        args,
+        key: 'id',
+        minimum: 0,
+      );
+			if (idValidationError != null) {
+				return idValidationError;
+			}
+      final CallToolResult? collectionIdValidationError = validateRequiredStringArgument(
+        args,
+        key: 'collectionId',
+      );
+      if (collectionIdValidationError != null) {
+        return collectionIdValidationError;
+      }
+			return buildContentResult(
+				apiCall: () => service.addToCollection(args),
+				contentBuilder: (_) {
+					return 'Successfully added the live capture record to the collection.';
 				},
 			);
 		},
@@ -280,6 +357,15 @@ class _CaptureLiveService {
 			),
 		);
 	}
+
+  Future<String> addToCollection(Map<String, dynamic> args) {
+    return client.sendPostRequest(
+      JsonRequest(
+        route: '/capture/live/collection/add',
+        jsonMap: args,
+      ),
+    );
+  }
 
 }
 

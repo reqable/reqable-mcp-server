@@ -1,27 +1,27 @@
 import 'dart:io';
 
 import 'package:mcp_dart/mcp_dart.dart';
-import 'package:reqable_mcp/api/client.dart';
-import 'package:reqable_mcp/resources/script.dart';
-import 'package:reqable_mcp/tools/capture/breakpoint.dart';
-import 'package:reqable_mcp/tools/capture/access_control.dart';
-import 'package:reqable_mcp/tools/capture/gateway.dart';
-import 'package:reqable_mcp/config.dart';
-import 'package:reqable_mcp/tools/capture/live.dart';
-import 'package:reqable_mcp/tools/capture/mirror.dart';
-import 'package:reqable_mcp/tools/capture/network_throttling.dart';
-import 'package:reqable_mcp/tools/capture/report_server.dart';
-import 'package:reqable_mcp/tools/capture/reverse_proxy.dart';
-import 'package:reqable_mcp/tools/capture/secondary_proxy.dart';
-import 'package:reqable_mcp/tools/capture/ssl_proxying.dart';
-import 'package:reqable_mcp/tools/capture/rewrite.dart';
-import 'package:reqable_mcp/tools/capture/script.dart';
-import 'package:reqable_mcp/tools/collection/collection.dart';
-import 'package:reqable_mcp/tools/environment/environment.dart';
-import 'package:reqable_mcp/tools/rest/http.dart';
-import 'package:reqable_mcp/tools/rest/websocket.dart';
-import 'package:reqable_mcp/tools/script.dart';
-import 'package:reqable_mcp/version.g.dart';
+import 'package:reqable_mcp_server/api/client.dart';
+import 'package:reqable_mcp_server/resources/script.dart';
+import 'package:reqable_mcp_server/tools/capture/breakpoint.dart';
+import 'package:reqable_mcp_server/tools/capture/access_control.dart';
+import 'package:reqable_mcp_server/tools/capture/gateway.dart';
+import 'package:reqable_mcp_server/config.dart';
+import 'package:reqable_mcp_server/tools/capture/live.dart';
+import 'package:reqable_mcp_server/tools/capture/mirror.dart';
+import 'package:reqable_mcp_server/tools/capture/network_throttling.dart';
+import 'package:reqable_mcp_server/tools/capture/report_server.dart';
+import 'package:reqable_mcp_server/tools/capture/reverse_proxy.dart';
+import 'package:reqable_mcp_server/tools/capture/secondary_proxy.dart';
+import 'package:reqable_mcp_server/tools/capture/ssl_proxying.dart';
+import 'package:reqable_mcp_server/tools/capture/rewrite.dart';
+import 'package:reqable_mcp_server/tools/capture/script.dart';
+import 'package:reqable_mcp_server/tools/collection/collection.dart';
+import 'package:reqable_mcp_server/tools/environment/environment.dart';
+import 'package:reqable_mcp_server/tools/rest/http.dart';
+import 'package:reqable_mcp_server/tools/rest/websocket.dart';
+import 'package:reqable_mcp_server/tools/script.dart';
+import 'package:reqable_mcp_server/version.g.dart';
 
 class Application {
 

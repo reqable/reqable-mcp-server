@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:mcp_dart/mcp_dart.dart';
-import 'package:reqable_mcp/utils/json.dart';
+import 'package:reqable_mcp_server/utils/json.dart';
 
 Future<CallToolResult> buildContentResult({
   required Future<String> Function() apiCall,

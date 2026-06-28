@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:reqable_mcp/utils/json.dart';
-import 'package:reqable_mcp/utils/storage.dart';
+import 'package:reqable_mcp_server/utils/json.dart';
+import 'package:reqable_mcp_server/utils/storage.dart';
 
 const String _kDefaultHost = '127.0.0.1';
 const int _kDefaultPort = 9000;

@@ -1,5 +1,5 @@
 import 'package:mcp_dart/mcp_dart.dart';
-import 'package:reqable_mcp/tools/result.dart';
+import 'package:reqable_mcp_server/tools/result.dart';
 
 CallToolResult? validateRequiredStringArgument(
 	Map<String, dynamic> args, {

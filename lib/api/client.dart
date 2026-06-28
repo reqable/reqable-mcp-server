@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:reqable_mcp/utils/json.dart';
-import 'package:reqable_mcp/version.g.dart';
+import 'package:reqable_mcp_server/utils/json.dart';
+import 'package:reqable_mcp_server/version.g.dart';
 
 class ReqableApiClient {
 

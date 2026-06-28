@@ -1,6 +1,6 @@
 import 'package:mcp_dart/mcp_dart.dart';
-import 'package:reqable_mcp/api/client.dart';
-import 'package:reqable_mcp/tools/script.dart';
+import 'package:reqable_mcp_server/api/client.dart';
+import 'package:reqable_mcp_server/tools/script.dart';
 
 void registerScriptResources(McpServer server, ReqableApiClient client) {
   final ScriptService scriptService = ScriptService(client: client);

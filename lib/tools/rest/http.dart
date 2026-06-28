@@ -1,9 +1,9 @@
 import 'package:mcp_dart/mcp_dart.dart';
-import 'package:reqable_mcp/api/client.dart';
-import 'package:reqable_mcp/tools/rest/base.dart';
-import 'package:reqable_mcp/tools/result.dart';
-import 'package:reqable_mcp/tools/schema.dart';
-import 'package:reqable_mcp/tools/validate.dart';
+import 'package:reqable_mcp_server/api/client.dart';
+import 'package:reqable_mcp_server/tools/rest/base.dart';
+import 'package:reqable_mcp_server/tools/result.dart';
+import 'package:reqable_mcp_server/tools/schema.dart';
+import 'package:reqable_mcp_server/tools/validate.dart';
 
 void registerRestHttpTools(McpServer server, ReqableApiClient client) {
 	final _RestHttpService service = _RestHttpService(

@@ -1,5 +1,5 @@
-name: reqable_mcp
-description: Reqable MCP is a command-line tool for connecting your AI to Reqable.
+name: reqable_mcp_server
+description: Reqable MCP Server is a command-line tool for connecting your AI to Reqable.
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
 

@@ -266,7 +266,7 @@ class _CaptureLiveService {
   Future<String> generateCurl(Map<String, dynamic> args) {
     return client.sendPostRequest(
       JsonRequest(
-        route: '/capture/live/generate-curl',
+        route: '/capture/live/generate/curl',
         jsonMap: args,
       ),
     );

@@ -14,11 +14,8 @@ void registerScriptTools(McpServer server, ReqableApiClient client) {
 			readOnlyHint: true,
 		),
 		callback: (args, extra) async {
-			return buildContentResult(
+			return buildTextResult(
 				apiCall: service.getFramework,
-        contentBuilder: (content) {
-          return content.toString();
-        },
 			);
 		},
 	);
@@ -30,11 +27,8 @@ void registerScriptTools(McpServer server, ReqableApiClient client) {
 			readOnlyHint: true,
 		),
 		callback: (args, extra) async {
-			return buildContentResult(
+			return buildTextResult(
 				apiCall: service.getTemplate,
-        contentBuilder: (content) {
-          return content.toString();
-        },
 			);
 		},
 	);

@@ -164,17 +164,6 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client) {
 			},
 			required: ['id'],
 		),
-    outputSchema: const ToolOutputSchema(
-      title: 'cURL Command',
-      description: 'The generated cURL command for the live capture record.',
-      properties: {
-        'curl': JsonString(
-          title: 'cURL Command',
-          description: 'The generated cURL command string.',
-        ),
-      },
-      required: ['curl'],
-    ),
     callback: (args, extra) {
       final CallToolResult? validationError = validateRequiredIntArgument(
 				args,
@@ -184,13 +173,8 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client) {
 			if (validationError != null) {
 				return validationError;
 			}
-      return buildContentResult(
+      return buildTextResult(
         apiCall: () => service.generateCurl(args),
-        contentBuilder: (jsonMap) {
-          final String id = args['id'];
-					final String curl = jsonMap['curl'];
-					return 'Generated cURL command for live capture record $id:\n$curl';
-        },
       );
     },
   );

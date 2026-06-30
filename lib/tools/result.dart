@@ -47,6 +47,26 @@ Future<CallToolResult> buildContentResult({
   }
 }
 
+Future<CallToolResult> buildTextResult({
+  required Future<String> Function() apiCall,
+}) async {
+  final String result;
+  try {
+    result = await apiCall();
+  } catch (error) {
+    return buildErrorResult(
+      message: error.toString()
+    );
+  }
+  return CallToolResult(
+    content: [
+      TextContent(
+        text: result
+      )
+    ],
+  );
+}
+
 Future<CallToolResult> buildVoidResult({
   required Future<void> Function() apiCall,
   required String message,

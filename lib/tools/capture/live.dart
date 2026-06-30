@@ -187,7 +187,9 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client) {
       return buildContentResult(
         apiCall: () => service.generateCurl(args),
         contentBuilder: (jsonMap) {
-          return jsonMap['curl'];
+          final String id = args['id'];
+					final String curl = jsonMap['curl'];
+					return 'Generated cURL command for live capture record $id:\n$curl';
         },
       );
     },

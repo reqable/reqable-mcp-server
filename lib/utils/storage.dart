@@ -6,10 +6,14 @@ class Storage {
   static String? get rootPath {
     if (Platform.isWindows) {
       final String? appData = Platform.environment['APPDATA'];
-      if (appData == null || appData.isEmpty) {
-        return null;
+      if (appData != null && appData.isNotEmpty) {
+        return '$appData\\Reqable';
       }
-      return '$appData\\Roaming\\Reqable';
+      final String? home = Platform.environment['HOME'];
+      if (home != null && home.isNotEmpty) {
+        return '$home\\AppData\\Roaming\\Reqable';
+      }
+      return null;
     } else if (Platform.isMacOS) {
       final String? home = Platform.environment['HOME'];
       if (home == null || home.isEmpty) {

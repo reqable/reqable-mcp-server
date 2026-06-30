@@ -98,6 +98,7 @@ The server registers more than one hundred MCP tools. They are grouped by capabi
 | `collection_api_add` | Add an existing HTTP or WebSocket API into a collection. |
 | `collection_api_update` | Update an existing API in a collection. |
 | `collection_api_delete` | Delete an API from a collection. |
+| `collection_api_generate_curl` | Generate a cURL command for a HTTP API in a collection by collection ID and API ID. |
 
 ### Script Resources
 

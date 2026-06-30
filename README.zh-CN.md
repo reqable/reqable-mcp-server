@@ -98,6 +98,7 @@ dart compile exe bin/main.dart -o build/reqable-mcp-server
 | `collection_api_add` | 将已创建的 HTTP 或 WebSocket API 加入 Collection。 |
 | `collection_api_update` | 更新 Collection 中已有的 API。 |
 | `collection_api_delete` | 从 Collection 中删除指定 API。 |
+| `collection_api_generate_curl` | 根据 Collection ID 和 API ID 生成 cURL。 |
 
 ### 脚本资源
 

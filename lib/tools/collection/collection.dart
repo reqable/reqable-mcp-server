@@ -588,6 +588,44 @@ void registerRestCollectionTools(McpServer server, ReqableApiClient client) {
 			);
 		},
 	);
+  server.registerTool(
+		'collection_api_generate_curl',
+		title: 'Generate cURL Command for HTTP API',
+		description: 'Generate a cURL command for a HTTP API in a Reqable collection by collection ID and API ID.',
+		annotations: ToolAnnotations(
+			readOnlyHint: true,
+		),
+		inputSchema: const ToolInputSchema(
+			description: 'Provide the collection ID and the HTTP API ID to generate a cURL command.',
+			properties: {
+				'collectionId': _kCollectionIdScheme,
+				'id': JsonString(
+          title: 'HTTP API ID',
+          description: 'The Reqable unique HTTP API identifier.',
+        )
+			},
+			required: ['collectionId', 'id'],
+		),
+		callback: (args, extra) {
+			final CallToolResult? collectionIdValidationError = validateRequiredStringArgument(
+        args,
+        key: 'collectionId',
+      );
+      if (collectionIdValidationError != null) {
+        return collectionIdValidationError;
+      }
+      final CallToolResult? idValidationError = validateRequiredStringArgument(
+        args,
+        key: 'id',
+      );
+      if (idValidationError != null) {
+        return idValidationError;
+      }
+			return buildTextResult(
+				apiCall: () => service.generateCurlCommand(args),
+			);
+		},
+	);
 }
 
 class _RestCollectionService {
@@ -689,6 +727,12 @@ class _RestCollectionService {
 			JsonRequest(route: '/collection/api/delete', jsonMap: args),
 		);
 	}
+
+  Future<String> generateCurlCommand(Map<String, dynamic> args) {
+    return client.sendPostRequest(
+      JsonRequest(route: '/collection/api/generate/curl', jsonMap: args),
+    );
+  }
 
 }
 

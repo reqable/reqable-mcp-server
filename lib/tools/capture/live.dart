@@ -299,7 +299,7 @@ class _CaptureLiveService {
 	}
 
 	Future<void> setEnabled(bool enabled) {
-		return client.sendGetRequest(
+		return client.sendPostRequest(
 			VoidRequest(
 				route: enabled
 					? '/capture/live/on'

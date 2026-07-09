@@ -5,29 +5,35 @@ import 'package:reqable_mcp_server/tools/rest/http.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
 import 'package:reqable_mcp_server/tools/schema.dart';
+import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCaptureLiveTools(McpServer server, ReqableApiClient client) {
+void registerCaptureLiveTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
+  if (!scope.toolGroups.contains(ReqableToolGroup.captureLive)) {
+    return;
+  }
 	final _CaptureLiveService service = _CaptureLiveService(
 		client: client,
 	);
-	server.registerTool(
-		'capture_live_status',
-		title: 'Get Live Capture Status',
-		description: 'Get whether Reqable live capture is currently active or inactive.',
-		annotations: ToolAnnotations(
-			readOnlyHint: true,
-		),
-		outputSchema: _kCaptureLiveStatusSchema,
-		callback: (args, extra) {
-			return buildContentResult(
-				apiCall: service.getStatus,
-				contentBuilder: (jsonMap) {
-					return 'Reqable live capture is currently ${jsonMap['status']}.';
-				},
-			);
-		},
-	);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_live_status',
+      title: 'Get Live Capture Status',
+      description: 'Get whether Reqable live capture is currently active or inactive.',
+      annotations: ToolAnnotations(
+        readOnlyHint: true,
+      ),
+      outputSchema: _kCaptureLiveStatusSchema,
+      callback: (args, extra) {
+        return buildContentResult(
+          apiCall: service.getStatus,
+          contentBuilder: (jsonMap) {
+            return 'Reqable live capture is currently ${jsonMap['status']}.';
+          },
+        );
+      },
+    );
+  }
 	server.registerTool(
 		'capture_live_set_enabled',
 		title: 'Set Live Capture Enabled State',
@@ -133,23 +139,25 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client) {
 			);
 		},
 	);
-  server.registerTool(
-		'capture_live_clear',
-		title: 'Clear Live Capture Records',
-    description: 'Clear all currently retained Reqable live capture records.',
-    annotations: ToolAnnotations(
-      readOnlyHint: false,
-      destructiveHint: true,
-      idempotentHint: true,
-    ),
-    outputSchema: kMutationResultSchema,
-    callback: (args, extra) {
-      return buildVoidResult(
-        apiCall: service.clearRecords,
-        message: 'Successfully cleared all live capture records.',
-      );
-    },
-  );
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_live_clear',
+      title: 'Clear Live Capture Records',
+      description: 'Clear all currently retained Reqable live capture records.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: true,
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        return buildVoidResult(
+          apiCall: service.clearRecords,
+          message: 'Successfully cleared all live capture records.',
+        );
+      },
+    );
+  }
   server.registerTool(
 		'capture_live_generate_curl',
 		title: 'Generate cURL Command for A Live Capture Record By ID',

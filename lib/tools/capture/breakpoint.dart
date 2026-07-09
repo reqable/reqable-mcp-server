@@ -2,9 +2,13 @@ import 'package:mcp_dart/mcp_dart.dart';
 import 'package:reqable_mcp_server/api/client.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
 import 'package:reqable_mcp_server/tools/schema.dart';
+import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client) {
+void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
+  if (!scope.toolGroups.contains(ReqableToolGroup.captureBreakpoint)) {
+    return;
+  }
   final _CaptureBreakpointService service = _CaptureBreakpointService(
     client: client
   );
@@ -62,78 +66,82 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client) {
       );
     },
   );
-  server.registerTool(
-    'capture_breakpoint_list',
-    title: 'List Breakpoints',
-    description: 'List all Reqable breakpoints as a flat list. Breakpoint folders are not returned as items.',
-    annotations: ToolAnnotations(
-      readOnlyHint: true,
-    ),
-    outputSchema: ToolOutputSchema(
-      title: 'Breakpoint List',
-      description: 'A flat list of all Reqable breakpoints currently defined.',
-      properties: {
-        'items': JsonArray(
-          title: 'Breakpoints',
-          description: 'A flat list of breakpoint definitions.',
-          items: _kBreakpointSchema,
-        ),
-      },
-      required: ['items'],
-    ),
-    callback: (args, extra) {
-      return buildContentResult(
-        apiCall: service.listBreakpoints,
-        contentBuilder: (jsonList) {
-          return 'There are currently ${jsonList.length} breakpoints defined.';
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_breakpoint_list',
+      title: 'List Breakpoints',
+      description: 'List all Reqable breakpoints as a flat list. Breakpoint folders are not returned as items.',
+      annotations: ToolAnnotations(
+        readOnlyHint: true,
+      ),
+      outputSchema: ToolOutputSchema(
+        title: 'Breakpoint List',
+        description: 'A flat list of all Reqable breakpoints currently defined.',
+        properties: {
+          'items': JsonArray(
+            title: 'Breakpoints',
+            description: 'A flat list of breakpoint definitions.',
+            items: _kBreakpointSchema,
+          ),
         },
-      );
-    },
-  );
-  server.registerTool(
-    'capture_breakpoint_set_item_enabled',
-    title: 'Set Breakpoints Enabled State',
-    description: 'Enable or disable one or more breakpoints by their IDs without changing their definitions.',
-    annotations: ToolAnnotations(
-      readOnlyHint: false,
-      destructiveHint: false,
-      idempotentHint: true,
-    ),
-    inputSchema: const ToolInputSchema(
-      description: 'Provide one or more breakpoint IDs and whether they should be enabled.',
-      properties: {
-        'ids': JsonArray(
-          items: _kBreakpointIdSchema,
-        ),
-        'enabled': JsonBoolean(
-          title: 'Enabled',
-          description: 'Whether to enable the specified breakpoints.',
-        ),
+        required: ['items'],
+      ),
+      callback: (args, extra) {
+        return buildContentResult(
+          apiCall: service.listBreakpoints,
+          contentBuilder: (jsonList) {
+            return 'There are currently ${jsonList.length} breakpoints defined.';
+          },
+        );
       },
-      required: ['ids', 'enabled'],
-    ),
-    outputSchema: kMutationResultSchema,
-    callback: (args, extra) {
-      CallToolResult? validationError = validateRequiredStringListArgument(
-        args,
-        key: 'ids',
-      );
-      validationError ??= validateRequiredBoolArgument(
-        args,
-        key: 'enabled',
-      );
-      if (validationError != null) {
-        return validationError;
-      }
-      final bool enabled = args['enabled'];
-      return buildVoidResult(
-        apiCall: () {
-          return service.setBreakpointsEnabled(args);
+    );
+  }
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_breakpoint_set_item_enabled',
+      title: 'Set Breakpoints Enabled State',
+      description: 'Enable or disable one or more breakpoints by their IDs without changing their definitions.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide one or more breakpoint IDs and whether they should be enabled.',
+        properties: {
+          'ids': JsonArray(
+            items: _kBreakpointIdSchema,
+          ),
+          'enabled': JsonBoolean(
+            title: 'Enabled',
+            description: 'Whether to enable the specified breakpoints.',
+          ),
         },
-        message: 'Successfully ${enabled ? 'enabled' : 'disabled'} the specified breakpoints.',
-      );
-    },
-  );
+        required: ['ids', 'enabled'],
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        CallToolResult? validationError = validateRequiredStringListArgument(
+          args,
+          key: 'ids',
+        );
+        validationError ??= validateRequiredBoolArgument(
+          args,
+          key: 'enabled',
+        );
+        if (validationError != null) {
+          return validationError;
+        }
+        final bool enabled = args['enabled'];
+        return buildVoidResult(
+          apiCall: () {
+            return service.setBreakpointsEnabled(args);
+          },
+          message: 'Successfully ${enabled ? 'enabled' : 'disabled'} the specified breakpoints.',
+        );
+      },
+    );
+  }
   server.registerTool(
     'capture_breakpoint_get_by_id',
     title: 'Get Breakpoint by ID',
@@ -215,41 +223,43 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client) {
       );
     },
   );
-  server.registerTool(
-    'capture_breakpoint_create_folder',
-    title: 'Create Breakpoint Folder',
-    description: 'Create a new breakpoint folder for organizing related Reqable breakpoints and return the created folder.',
-    annotations: ToolAnnotations(
-      readOnlyHint: false,
-      destructiveHint: false,
-      idempotentHint: false,
-    ),
-    inputSchema: const ToolInputSchema(
-      description: 'Provide the folder name for a new breakpoint folder.',
-      properties: {
-        'name': _kBreakpointFolderNameSchema,
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_breakpoint_create_folder',
+      title: 'Create Breakpoint Folder',
+      description: 'Create a new breakpoint folder for organizing related Reqable breakpoints and return the created folder.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide the folder name for a new breakpoint folder.',
+        properties: {
+          'name': _kBreakpointFolderNameSchema,
+        },
+        required: ['name'],
+      ),
+      outputSchema: _kBreakpointFolderSchema,
+      callback: (args, extra) {
+        final CallToolResult? validationError = validateRequiredStringArgument(
+          args,
+          key: 'name',
+        );
+        if (validationError != null) {
+          return validationError;
+        }
+        return buildContentResult(
+          apiCall: () {
+            return service.createBreakpointFolder(args);
+          },
+          contentBuilder: (_) {
+            return 'Successfully created the breakpoint folder.';
+          },
+        );
       },
-      required: ['name'],
-    ),
-    outputSchema: _kBreakpointFolderSchema,
-    callback: (args, extra) {
-      final CallToolResult? validationError = validateRequiredStringArgument(
-        args,
-        key: 'name',
-      );
-      if (validationError != null) {
-        return validationError;
-      }
-      return buildContentResult(
-        apiCall: () {
-          return service.createBreakpointFolder(args);
-        },
-        contentBuilder: (_) {
-          return 'Successfully created the breakpoint folder.';
-        },
-      );
-    },
-  );
+    );
+  }
   server.registerTool(
     'capture_breakpoint_delete',
     title: 'Delete Breakpoints',
@@ -285,41 +295,43 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client) {
       );
     },
   );
-  server.registerTool(
-    'capture_breakpoint_delete_folder',
-    title: 'Delete Breakpoint Folders',
-    description: 'Permanently delete one or more breakpoint folders by their IDs.',
-    annotations: ToolAnnotations(
-      readOnlyHint: false,
-      destructiveHint: true,
-      idempotentHint: false,
-    ),
-    inputSchema: const ToolInputSchema(
-      description: 'Provide one or more breakpoint folder IDs to delete permanently.',
-      properties: {
-        'ids': JsonArray(
-          items: _kBreakpointFolderIdSchema
-        ),
-      },
-      required: ['ids'],
-    ),
-    outputSchema: kMutationResultSchema,
-    callback: (args, extra) {
-      final CallToolResult? validationError = validateRequiredStringListArgument(
-        args,
-        key: 'ids',
-      );
-      if (validationError != null) {
-        return validationError;
-      }
-      return buildVoidResult(
-        apiCall: () {
-          return service.deleteBreakpointFolders(args);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_breakpoint_delete_folder',
+      title: 'Delete Breakpoint Folders',
+      description: 'Permanently delete one or more breakpoint folders by their IDs.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: false,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide one or more breakpoint folder IDs to delete permanently.',
+        properties: {
+          'ids': JsonArray(
+            items: _kBreakpointFolderIdSchema
+          ),
         },
-        message: 'Successfully deleted the specified breakpoint folders.',
-      );
-    },
-  );
+        required: ['ids'],
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        final CallToolResult? validationError = validateRequiredStringListArgument(
+          args,
+          key: 'ids',
+        );
+        if (validationError != null) {
+          return validationError;
+        }
+        return buildVoidResult(
+          apiCall: () {
+            return service.deleteBreakpointFolders(args);
+          },
+          message: 'Successfully deleted the specified breakpoint folders.',
+        );
+      },
+    );
+  }
   server.registerTool(
     'capture_breakpoint_update',
     title: 'Update Breakpoint',
@@ -340,47 +352,49 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client) {
       );
     },
   );
-  server.registerTool(
-    'capture_breakpoint_update_folder_name',
-    title: 'Rename Breakpoint Folder',
-    description: 'Rename an existing breakpoint folder by ID.',
-    annotations: ToolAnnotations(
-      readOnlyHint: false,
-      destructiveHint: false,
-      idempotentHint: true,
-    ),
-    inputSchema: const ToolInputSchema(
-      description: 'Provide the breakpoint folder ID and the new folder name.',
-      properties: {
-        'id': _kBreakpointFolderIdSchema,
-        'name': _kBreakpointFolderNameSchema,
-      },
-      required: ['id', 'name'],
-    ),
-    outputSchema: kMutationResultSchema,
-    callback: (args, extra) {
-      final CallToolResult? idValidationError = validateRequiredStringArgument(
-				args,
-				key: 'id',
-			);
-			if (idValidationError != null) {
-				return idValidationError;
-			}
-			final CallToolResult? nameValidationError = validateRequiredStringArgument(
-				args,
-				key: 'name',
-			);
-			if (nameValidationError != null) {
-				return nameValidationError;
-			}
-      return buildVoidResult(
-        apiCall: () {
-          return service.updateBreakpointFolderName(args);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_breakpoint_update_folder_name',
+      title: 'Rename Breakpoint Folder',
+      description: 'Rename an existing breakpoint folder by ID.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide the breakpoint folder ID and the new folder name.',
+        properties: {
+          'id': _kBreakpointFolderIdSchema,
+          'name': _kBreakpointFolderNameSchema,
         },
-        message: 'Successfully updated the breakpoint folder name.',
-      );
-    },
-  );
+        required: ['id', 'name'],
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        final CallToolResult? idValidationError = validateRequiredStringArgument(
+          args,
+          key: 'id',
+        );
+        if (idValidationError != null) {
+          return idValidationError;
+        }
+        final CallToolResult? nameValidationError = validateRequiredStringArgument(
+          args,
+          key: 'name',
+        );
+        if (nameValidationError != null) {
+          return nameValidationError;
+        }
+        return buildVoidResult(
+          apiCall: () {
+            return service.updateBreakpointFolderName(args);
+          },
+          message: 'Successfully updated the breakpoint folder name.',
+        );
+      },
+    );
+  }
 }
 
 class _CaptureBreakpointService {

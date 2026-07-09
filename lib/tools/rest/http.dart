@@ -3,9 +3,13 @@ import 'package:reqable_mcp_server/api/client.dart';
 import 'package:reqable_mcp_server/tools/rest/base.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
 import 'package:reqable_mcp_server/tools/schema.dart';
+import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerRestHttpTools(McpServer server, ReqableApiClient client) {
+void registerRestHttpTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
+	if (!scope.toolGroups.contains(ReqableToolGroup.rest)) {
+		return;
+	}
 	final _RestHttpService service = _RestHttpService(
 		client: client,
 	);

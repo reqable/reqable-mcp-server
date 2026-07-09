@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/utils/json.dart';
 import 'package:reqable_mcp_server/utils/storage.dart';
 
@@ -12,16 +13,23 @@ class ReqableMcpConfig {
 
   final String host;
   final int port;
+  final ReqableToolScope scope;
 
   const ReqableMcpConfig({
     required this.host,
     required this.port,
+    required this.scope,
   });
 
   factory ReqableMcpConfig.fromArgs(List<String> arguments) {
     final ArgParser parser = ArgParser();
     parser.addOption('host', abbr: 'h');
     parser.addOption('port', abbr: 'p');
+    parser.addOption(
+      'scope', abbr: 's',
+      defaultsTo: ReqableToolScope.minimal.name,
+      allowed: ReqableToolScope.values.map((scope) => scope.name).toList()
+    );
     final ArgResults argResults = parser.parse(arguments);
     final String host;
     final String? hostArg = argResults.option('host');
@@ -52,9 +60,14 @@ class ReqableMcpConfig {
         port = _kDefaultPort;
       }
     }
+    final String? scope = argResults.option('scope');
     return ReqableMcpConfig(
       host: host,
       port: port,
+      scope: ReqableToolScope.values.firstWhere(
+        (s) => s.name == scope,
+        orElse: () => ReqableToolScope.minimal,
+      ),
     );
   }
 

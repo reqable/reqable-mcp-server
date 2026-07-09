@@ -2,9 +2,13 @@ import 'package:mcp_dart/mcp_dart.dart';
 import 'package:reqable_mcp_server/api/client.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
 import 'package:reqable_mcp_server/tools/schema.dart';
+import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCaptureScriptTools(McpServer server, ReqableApiClient client) {
+void registerCaptureScriptTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
+	if (!scope.toolGroups.contains(ReqableToolGroup.captureScript)) {
+		return;
+	}
 	final _CaptureScriptService service = _CaptureScriptService(
 		client: client
 	);
@@ -62,78 +66,82 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client) {
 			);
 		},
 	);
-	server.registerTool(
-		'capture_script_list',
-		title: 'List Scripts',
-		description: 'List all Reqable scripts as a flat list. Script folders are not returned as items.',
-		annotations: ToolAnnotations(
-			readOnlyHint: true,
-		),
-		outputSchema: ToolOutputSchema(
-			title: 'Script List',
-			description: 'A flat list of all Reqable scripts currently defined.',
-			properties: {
-				'items': JsonArray(
-					title: 'Scripts',
-					description: 'A flat list of script definitions.',
-					items: _kScriptSchema,
-				),
-			},
-			required: ['items'],
-		),
-		callback: (args, extra) {
-			return buildContentResult(
-				apiCall: service.listScripts,
-				contentBuilder: (jsonList) {
-					return 'There are currently ${jsonList.length} scripts defined.';
-				},
-			);
-		},
-	);
-	server.registerTool(
-		'capture_script_set_item_enabled',
-		title: 'Set Scripts Enabled State',
-		description: 'Enable or disable one or more scripts by their IDs without changing their definitions.',
-		annotations: ToolAnnotations(
-			readOnlyHint: false,
-			destructiveHint: false,
-			idempotentHint: true,
-		),
-		inputSchema: const ToolInputSchema(
-			description: 'Provide one or more script IDs and whether they should be enabled.',
-			properties: {
-				'ids': JsonArray(
-					items: _kScriptIdSchema
-				),
-				'enabled': JsonBoolean(
-					title: 'Enabled',
-					description: 'Whether to enable the specified scripts.',
-				),
-			},
-			required: ['ids', 'enabled'],
-		),
-		outputSchema: kMutationResultSchema,
-		callback: (args, extra) {
-			CallToolResult? validationError = validateRequiredStringListArgument(
-				args,
-				key: 'ids',
-			);
-			validationError ??= validateRequiredBoolArgument(
-				args,
-				key: 'enabled',
-			);
-			if (validationError != null) {
-				return validationError;
-			}
-			final bool enabled = args['enabled'];
-			return buildVoidResult(
-				apiCall: () {
-					return service.setScriptsEnabled(args);
-				},
-				message: 'Successfully ${enabled ? 'enabled' : 'disabled'} the specified scripts.',
-			);
-		},
-	);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_script_list',
+      title: 'List Scripts',
+      description: 'List all Reqable scripts as a flat list. Script folders are not returned as items.',
+      annotations: ToolAnnotations(
+        readOnlyHint: true,
+      ),
+      outputSchema: ToolOutputSchema(
+        title: 'Script List',
+        description: 'A flat list of all Reqable scripts currently defined.',
+        properties: {
+          'items': JsonArray(
+            title: 'Scripts',
+            description: 'A flat list of script definitions.',
+            items: _kScriptSchema,
+          ),
+        },
+        required: ['items'],
+      ),
+      callback: (args, extra) {
+        return buildContentResult(
+          apiCall: service.listScripts,
+          contentBuilder: (jsonList) {
+            return 'There are currently ${jsonList.length} scripts defined.';
+          },
+        );
+      },
+    );
+  }
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_script_set_item_enabled',
+      title: 'Set Scripts Enabled State',
+      description: 'Enable or disable one or more scripts by their IDs without changing their definitions.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide one or more script IDs and whether they should be enabled.',
+        properties: {
+          'ids': JsonArray(
+            items: _kScriptIdSchema
+          ),
+          'enabled': JsonBoolean(
+            title: 'Enabled',
+            description: 'Whether to enable the specified scripts.',
+          ),
+        },
+        required: ['ids', 'enabled'],
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        CallToolResult? validationError = validateRequiredStringListArgument(
+          args,
+          key: 'ids',
+        );
+        validationError ??= validateRequiredBoolArgument(
+          args,
+          key: 'enabled',
+        );
+        if (validationError != null) {
+          return validationError;
+        }
+        final bool enabled = args['enabled'];
+        return buildVoidResult(
+          apiCall: () {
+            return service.setScriptsEnabled(args);
+          },
+          message: 'Successfully ${enabled ? 'enabled' : 'disabled'} the specified scripts.',
+        );
+      },
+    );
+  }
 	server.registerTool(
 		'capture_script_get_by_id',
 		title: 'Get Script by ID',
@@ -221,41 +229,43 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client) {
 			);
 		},
 	);
-	server.registerTool(
-		'capture_script_create_folder',
-		title: 'Create Script Folder',
-		description: 'Create a new script folder for organizing related Reqable scripts and return the created folder.',
-		annotations: ToolAnnotations(
-			readOnlyHint: false,
-			destructiveHint: false,
-			idempotentHint: false,
-		),
-		inputSchema: const ToolInputSchema(
-			description: 'Provide the folder name for a new script folder.',
-			properties: {
-				'name': _kScriptFolderNameSchema,
-			},
-			required: ['name'],
-		),
-		outputSchema: _kScriptFolderSchema,
-		callback: (args, extra) {
-			final CallToolResult? validationError = validateRequiredStringArgument(
-        args,
-        key: 'name',
-      );
-      if (validationError != null) {
-        return validationError;
-      }
-			return buildContentResult(
-				apiCall: () {
-					return service.createScriptFolder(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully created the script folder.';
-				},
-			);
-		},
-	);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_script_create_folder',
+      title: 'Create Script Folder',
+      description: 'Create a new script folder for organizing related Reqable scripts and return the created folder.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide the folder name for a new script folder.',
+        properties: {
+          'name': _kScriptFolderNameSchema,
+        },
+        required: ['name'],
+      ),
+      outputSchema: _kScriptFolderSchema,
+      callback: (args, extra) {
+        final CallToolResult? validationError = validateRequiredStringArgument(
+          args,
+          key: 'name',
+        );
+        if (validationError != null) {
+          return validationError;
+        }
+        return buildContentResult(
+          apiCall: () {
+            return service.createScriptFolder(args);
+          },
+          contentBuilder: (_) {
+            return 'Successfully created the script folder.';
+          },
+        );
+      },
+    );
+  }
 	server.registerTool(
 		'capture_script_delete',
 		title: 'Delete Scripts',
@@ -291,41 +301,43 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client) {
 			);
 		},
 	);
-	server.registerTool(
-		'capture_script_delete_folder',
-		title: 'Delete Script Folders',
-		description: 'Permanently delete one or more script folders by ID.',
-		annotations: ToolAnnotations(
-			readOnlyHint: false,
-			destructiveHint: true,
-			idempotentHint: false,
-		),
-		inputSchema: const ToolInputSchema(
-			description: 'Provide one or more script folder IDs to delete permanently.',
-			properties: {
-				'ids': JsonArray(
-					items: _kScriptFolderIdSchema
-				),
-			},
-			required: ['ids'],
-		),
-		outputSchema: kMutationResultSchema,
-		callback: (args, extra) {
-			final CallToolResult? validationError = validateRequiredStringListArgument(
-				args,
-				key: 'ids',
-			);
-			if (validationError != null) {
-				return validationError;
-			}
-			return buildVoidResult(
-				apiCall: () {
-					return service.deleteScriptFolders(args);
-				},
-				message: 'Successfully deleted the specified script folders.',
-			);
-		},
-	);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_script_delete_folder',
+      title: 'Delete Script Folders',
+      description: 'Permanently delete one or more script folders by ID.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: false,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide one or more script folder IDs to delete permanently.',
+        properties: {
+          'ids': JsonArray(
+            items: _kScriptFolderIdSchema
+          ),
+        },
+        required: ['ids'],
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        final CallToolResult? validationError = validateRequiredStringListArgument(
+          args,
+          key: 'ids',
+        );
+        if (validationError != null) {
+          return validationError;
+        }
+        return buildVoidResult(
+          apiCall: () {
+            return service.deleteScriptFolders(args);
+          },
+          message: 'Successfully deleted the specified script folders.',
+        );
+      },
+    );
+  }
 	server.registerTool(
     'capture_script_update',
     title: 'Update Script',
@@ -346,47 +358,49 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client) {
       );
     },
   );
-	server.registerTool(
-		'capture_script_update_folder_name',
-		title: 'Rename Script Folder',
-		description: 'Rename an existing script folder by ID.',
-		annotations: ToolAnnotations(
-			readOnlyHint: false,
-			destructiveHint: false,
-			idempotentHint: true,
-		),
-		inputSchema: const ToolInputSchema(
-			description: 'Provide the script folder ID and the new folder name.',
-			properties: {
-				'id': _kScriptFolderIdSchema,
-				'name': _kScriptFolderNameSchema,
-			},
-			required: ['id', 'name'],
-		),
-		outputSchema: kMutationResultSchema,
-		callback: (args, extra) {
-			final CallToolResult? idValidationError = validateRequiredStringArgument(
-				args,
-				key: 'id',
-			);
-			if (idValidationError != null) {
-				return idValidationError;
-			}
-			final CallToolResult? nameValidationError = validateRequiredStringArgument(
-				args,
-				key: 'name',
-			);
-			if (nameValidationError != null) {
-				return nameValidationError;
-			}
-			return buildVoidResult(
-				apiCall: () {
-					return service.updateScriptFolderName(args);
-				},
-				message: 'Successfully updated the script folder name.',
-			);
-		},
-	);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_script_update_folder_name',
+      title: 'Rename Script Folder',
+      description: 'Rename an existing script folder by ID.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide the script folder ID and the new folder name.',
+        properties: {
+          'id': _kScriptFolderIdSchema,
+          'name': _kScriptFolderNameSchema,
+        },
+        required: ['id', 'name'],
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        final CallToolResult? idValidationError = validateRequiredStringArgument(
+          args,
+          key: 'id',
+        );
+        if (idValidationError != null) {
+          return idValidationError;
+        }
+        final CallToolResult? nameValidationError = validateRequiredStringArgument(
+          args,
+          key: 'name',
+        );
+        if (nameValidationError != null) {
+          return nameValidationError;
+        }
+        return buildVoidResult(
+          apiCall: () {
+            return service.updateScriptFolderName(args);
+          },
+          message: 'Successfully updated the script folder name.',
+        );
+      },
+    );
+  }
 }
 
 class _CaptureScriptService {

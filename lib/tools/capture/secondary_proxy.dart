@@ -2,9 +2,13 @@ import 'package:mcp_dart/mcp_dart.dart';
 import 'package:reqable_mcp_server/api/client.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
 import 'package:reqable_mcp_server/tools/schema.dart';
+import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCaptureSecondaryProxyTools(McpServer server, ReqableApiClient client) {
+void registerCaptureSecondaryProxyTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
+	if (!scope.toolGroups.contains(ReqableToolGroup.captureSecondaryProxy)) {
+		return;
+	}
 	final _CaptureSecondaryProxyService service = _CaptureSecondaryProxyService(
 		client: client
 	);

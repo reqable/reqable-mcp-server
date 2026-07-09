@@ -5,9 +5,13 @@ import 'package:reqable_mcp_server/tools/rest/http.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
 import 'package:reqable_mcp_server/tools/schema.dart';
+import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerRestCollectionTools(McpServer server, ReqableApiClient client) {
+void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
+	if (!scope.toolGroups.contains(ReqableToolGroup.collection)) {
+		return;
+	}
 	final _RestCollectionService service = _RestCollectionService(
 		client: client,
 	);
@@ -281,85 +285,89 @@ void registerRestCollectionTools(McpServer server, ReqableApiClient client) {
 			);
 		},
 	);
-	server.registerTool(
-		'collection_folder_update',
-		title: 'Update Folder Properties',
-		description: 'Update a Reqable collection folder properties object.',
-		annotations: ToolAnnotations(
-			readOnlyHint: false,
-			destructiveHint: false,
-			idempotentHint: false,
-		),
-		inputSchema: ToolInputSchema(
-      description: 'The collection ID, folder ID, and folder properties payload.',
-      properties: {
-        'collectionId': JsonString(
-          title: 'Collection ID',
-          description: 'The containing collection ID.',
-        ),
-        'id': JsonString(
-          title: 'Folder ID',
-          description: 'The folder ID.',
-        ),
-        ..._kFolderPropertiesSchema.properties ?? const {},
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'collection_folder_update',
+      title: 'Update Folder Properties',
+      description: 'Update a Reqable collection folder properties object.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+      ),
+      inputSchema: ToolInputSchema(
+        description: 'The collection ID, folder ID, and folder properties payload.',
+        properties: {
+          'collectionId': JsonString(
+            title: 'Collection ID',
+            description: 'The containing collection ID.',
+          ),
+          'id': JsonString(
+            title: 'Folder ID',
+            description: 'The folder ID.',
+          ),
+          ..._kFolderPropertiesSchema.properties ?? const {},
+        },
+        required: ['collectionId', 'id'],
+        additionalProperties: true,
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        final CallToolResult? collectionIdValidationError = validateRequiredStringArgument(
+          args,
+          key: 'collectionId',
+        );
+        if (collectionIdValidationError != null) {
+          return collectionIdValidationError;
+        }
+        final CallToolResult? idValidationError = validateRequiredStringArgument(
+          args,
+          key: 'id',
+        );
+        if (idValidationError != null) {
+          return idValidationError;
+        }
+        return buildVoidResult(
+          apiCall: () => service.updateFolder(args),
+          message: 'Successfully updated the folder properties.',
+        );
       },
-      required: ['collectionId', 'id'],
-      additionalProperties: true,
-    ),
-		outputSchema: kMutationResultSchema,
-		callback: (args, extra) {
-			final CallToolResult? collectionIdValidationError = validateRequiredStringArgument(
-        args,
-        key: 'collectionId',
-      );
-      if (collectionIdValidationError != null) {
-        return collectionIdValidationError;
-      }
-      final CallToolResult? idValidationError = validateRequiredStringArgument(
-        args,
-        key: 'id',
-      );
-      if (idValidationError != null) {
-        return idValidationError;
-      }
-			return buildVoidResult(
-				apiCall: () => service.updateFolder(args),
-				message: 'Successfully updated the folder properties.',
-			);
-		},
-	);
-	server.registerTool(
-		'collection_folder_delete',
-		title: 'Delete Folder',
-		description: 'Delete a folder from a Reqable collection.',
-		annotations: ToolAnnotations(
-			readOnlyHint: false,
-			destructiveHint: true,
-			idempotentHint: false,
-		),
-		inputSchema: _kCollectionFolderIdentitySchema,
-		outputSchema: kMutationResultSchema,
-		callback: (args, extra) {
-			final CallToolResult? collectionIdValidationError = validateRequiredStringArgument(
-        args,
-        key: 'collectionId',
-      );
-      if (collectionIdValidationError != null) {
-        return collectionIdValidationError;
-      }
-      final CallToolResult? idValidationError = validateRequiredStringArgument(
-        args,
-        key: 'id',
-      );
-      if (idValidationError != null) {
-        return idValidationError;
-      }
-			return buildVoidResult(
-				apiCall: () => service.deleteFolder(args),
-				message: 'Successfully deleted the folder.',
-			);
-		},
-	);
+    );
+  }
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'collection_folder_delete',
+      title: 'Delete Folder',
+      description: 'Delete a folder from a Reqable collection.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: false,
+      ),
+      inputSchema: _kCollectionFolderIdentitySchema,
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        final CallToolResult? collectionIdValidationError = validateRequiredStringArgument(
+          args,
+          key: 'collectionId',
+        );
+        if (collectionIdValidationError != null) {
+          return collectionIdValidationError;
+        }
+        final CallToolResult? idValidationError = validateRequiredStringArgument(
+          args,
+          key: 'id',
+        );
+        if (idValidationError != null) {
+          return idValidationError;
+        }
+        return buildVoidResult(
+          apiCall: () => service.deleteFolder(args),
+          message: 'Successfully deleted the folder.',
+        );
+      },
+    );
+  }
 	server.registerTool(
 		'collection_api_get',
 		title: 'Get Http or WebSocket in Collection By ID',

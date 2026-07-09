@@ -2,9 +2,13 @@ import 'package:mcp_dart/mcp_dart.dart';
 import 'package:reqable_mcp_server/api/client.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
 import 'package:reqable_mcp_server/tools/schema.dart';
+import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerEnvironmentTools(McpServer server, ReqableApiClient client) {
+void registerEnvironmentTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
+	if (!scope.toolGroups.contains(ReqableToolGroup.environment)) {
+		return;
+	}
 	final _EnvironmentService service = _EnvironmentService(client: client);
 	server.registerTool(
 		'environment_list',

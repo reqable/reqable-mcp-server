@@ -2,9 +2,13 @@ import 'package:mcp_dart/mcp_dart.dart';
 import 'package:reqable_mcp_server/api/client.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
 import 'package:reqable_mcp_server/tools/schema.dart';
+import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCaptureRewriteTools(McpServer server, ReqableApiClient client) {
+void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
+	if (!scope.toolGroups.contains(ReqableToolGroup.captureRewrite)) {
+		return;
+	}
 	final _CaptureRewriteService service = _CaptureRewriteService(
 		client: client,
 	);
@@ -62,78 +66,82 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client) {
 			);
 		},
 	);
-	server.registerTool(
-		'capture_rewrite_list',
-		title: 'List Rewrites',
-		description: 'List all Reqable rewrites as a flat list. Rewrite folders are not returned as items.',
-		annotations: ToolAnnotations(
-			readOnlyHint: true,
-		),
-		outputSchema: ToolOutputSchema(
-			title: 'Rewrite List',
-			description: 'A flat list of all Reqable rewrites currently defined.',
-			properties: {
-				'items': JsonArray(
-					title: 'Rewrites',
-					description: 'A flat list of rewrite definitions.',
-					items: _kRewriteSchema,
-				),
-			},
-			required: ['items'],
-		),
-		callback: (args, extra) {
-			return buildContentResult(
-				apiCall: service.listRewrites,
-				contentBuilder: (jsonList) {
-					return 'There are currently ${jsonList.length} rewrites defined.';
-				},
-			);
-		},
-	);
-	server.registerTool(
-		'capture_rewrite_set_item_enabled',
-		title: 'Set Rewrites Enabled State',
-		description: 'Enable or disable one or more rewrites by their IDs without changing their definitions.',
-		annotations: ToolAnnotations(
-			readOnlyHint: false,
-			destructiveHint: false,
-			idempotentHint: true,
-		),
-		inputSchema: const ToolInputSchema(
-			description: 'Provide one or more rewrite IDs and whether they should be enabled.',
-			properties: {
-				'ids': JsonArray(
-					items: _kRewriteIdSchema,
-				),
-				'enabled': JsonBoolean(
-					title: 'Enabled',
-					description: 'Whether to enable the specified rewrites.',
-				),
-			},
-			required: ['ids', 'enabled'],
-		),
-		outputSchema: kMutationResultSchema,
-		callback: (args, extra) {
-			CallToolResult? validationError = validateRequiredStringListArgument(
-				args,
-				key: 'ids',
-			);
-			validationError ??= validateRequiredBoolArgument(
-				args,
-				key: 'enabled',
-			);
-			if (validationError != null) {
-				return validationError;
-			}
-			final bool enabled = args['enabled'];
-			return buildVoidResult(
-				apiCall: () {
-					return service.setRewritesEnabled(args);
-				},
-				message: 'Successfully ${enabled ? 'enabled' : 'disabled'} the specified rewrites.',
-			);
-		},
-	);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_rewrite_list',
+      title: 'List Rewrites',
+      description: 'List all Reqable rewrites as a flat list. Rewrite folders are not returned as items.',
+      annotations: ToolAnnotations(
+        readOnlyHint: true,
+      ),
+      outputSchema: ToolOutputSchema(
+        title: 'Rewrite List',
+        description: 'A flat list of all Reqable rewrites currently defined.',
+        properties: {
+          'items': JsonArray(
+            title: 'Rewrites',
+            description: 'A flat list of rewrite definitions.',
+            items: _kRewriteSchema,
+          ),
+        },
+        required: ['items'],
+      ),
+      callback: (args, extra) {
+        return buildContentResult(
+          apiCall: service.listRewrites,
+          contentBuilder: (jsonList) {
+            return 'There are currently ${jsonList.length} rewrites defined.';
+          },
+        );
+      },
+    );
+  }
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_rewrite_set_item_enabled',
+      title: 'Set Rewrites Enabled State',
+      description: 'Enable or disable one or more rewrites by their IDs without changing their definitions.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide one or more rewrite IDs and whether they should be enabled.',
+        properties: {
+          'ids': JsonArray(
+            items: _kRewriteIdSchema,
+          ),
+          'enabled': JsonBoolean(
+            title: 'Enabled',
+            description: 'Whether to enable the specified rewrites.',
+          ),
+        },
+        required: ['ids', 'enabled'],
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        CallToolResult? validationError = validateRequiredStringListArgument(
+          args,
+          key: 'ids',
+        );
+        validationError ??= validateRequiredBoolArgument(
+          args,
+          key: 'enabled',
+        );
+        if (validationError != null) {
+          return validationError;
+        }
+        final bool enabled = args['enabled'];
+        return buildVoidResult(
+          apiCall: () {
+            return service.setRewritesEnabled(args);
+          },
+          message: 'Successfully ${enabled ? 'enabled' : 'disabled'} the specified rewrites.',
+        );
+      },
+    );
+  }
 	server.registerTool(
 		'capture_rewrite_get_by_id',
 		title: 'Get Rewrite by ID',
@@ -221,41 +229,43 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client) {
 			);
 		},
 	);
-	server.registerTool(
-		'capture_rewrite_create_folder',
-		title: 'Create Rewrite Folder',
-		description: 'Create a new rewrite folder for organizing related Reqable rewrites and return the created folder.',
-		annotations: ToolAnnotations(
-			readOnlyHint: false,
-			destructiveHint: false,
-			idempotentHint: false,
-		),
-		inputSchema: const ToolInputSchema(
-			description: 'Provide the folder name for a new rewrite folder.',
-			properties: {
-				'name': _kRewriteFolderNameSchema,
-			},
-			required: ['name'],
-		),
-		outputSchema: _kRewriteFolderSchema,
-		callback: (args, extra) {
-			final CallToolResult? validationError = validateRequiredStringArgument(
-				args,
-				key: 'name',
-			);
-			if (validationError != null) {
-				return validationError;
-			}
-			return buildContentResult(
-				apiCall: () {
-					return service.createRewriteFolder(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully created the rewrite folder.';
-				},
-			);
-		},
-	);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_rewrite_create_folder',
+      title: 'Create Rewrite Folder',
+      description: 'Create a new rewrite folder for organizing related Reqable rewrites and return the created folder.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide the folder name for a new rewrite folder.',
+        properties: {
+          'name': _kRewriteFolderNameSchema,
+        },
+        required: ['name'],
+      ),
+      outputSchema: _kRewriteFolderSchema,
+      callback: (args, extra) {
+        final CallToolResult? validationError = validateRequiredStringArgument(
+          args,
+          key: 'name',
+        );
+        if (validationError != null) {
+          return validationError;
+        }
+        return buildContentResult(
+          apiCall: () {
+            return service.createRewriteFolder(args);
+          },
+          contentBuilder: (_) {
+            return 'Successfully created the rewrite folder.';
+          },
+        );
+      },
+    );
+  }
 	server.registerTool(
 		'capture_rewrite_delete',
 		title: 'Delete Rewrites',
@@ -291,41 +301,43 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client) {
 			);
 		},
 	);
-	server.registerTool(
-		'capture_rewrite_delete_folder',
-		title: 'Delete Rewrite Folders',
-		description: 'Permanently delete one or more rewrite folders by their IDs.',
-		annotations: ToolAnnotations(
-			readOnlyHint: false,
-			destructiveHint: true,
-			idempotentHint: false,
-		),
-		inputSchema: const ToolInputSchema(
-			description: 'Provide one or more rewrite folder IDs to delete permanently.',
-			properties: {
-				'ids': JsonArray(
-					items: _kRewriteFolderIdSchema,
-				),
-			},
-			required: ['ids'],
-		),
-		outputSchema: kMutationResultSchema,
-		callback: (args, extra) {
-			final CallToolResult? validationError = validateRequiredStringListArgument(
-				args,
-				key: 'ids',
-			);
-			if (validationError != null) {
-				return validationError;
-			}
-			return buildVoidResult(
-				apiCall: () {
-					return service.deleteRewriteFolders(args);
-				},
-				message: 'Successfully deleted the specified rewrite folders.',
-			);
-		},
-	);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_rewrite_delete_folder',
+      title: 'Delete Rewrite Folders',
+      description: 'Permanently delete one or more rewrite folders by their IDs.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: false,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide one or more rewrite folder IDs to delete permanently.',
+        properties: {
+          'ids': JsonArray(
+            items: _kRewriteFolderIdSchema,
+          ),
+        },
+        required: ['ids'],
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        final CallToolResult? validationError = validateRequiredStringListArgument(
+          args,
+          key: 'ids',
+        );
+        if (validationError != null) {
+          return validationError;
+        }
+        return buildVoidResult(
+          apiCall: () {
+            return service.deleteRewriteFolders(args);
+          },
+          message: 'Successfully deleted the specified rewrite folders.',
+        );
+      },
+    );
+  }
 	server.registerTool(
     'capture_rewrite_update',
     title: 'Update Rewrite',
@@ -346,47 +358,49 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client) {
       );
     },
   );
-	server.registerTool(
-		'capture_rewrite_update_folder_name',
-		title: 'Rename Rewrite Folder',
-		description: 'Rename an existing rewrite folder by ID.',
-		annotations: ToolAnnotations(
-			readOnlyHint: false,
-			destructiveHint: false,
-			idempotentHint: true,
-		),
-		inputSchema: const ToolInputSchema(
-			description: 'Provide the rewrite folder ID and the new folder name.',
-			properties: {
-				'id': _kRewriteFolderIdSchema,
-				'name': _kRewriteFolderNameSchema,
-			},
-			required: ['id', 'name'],
-		),
-		outputSchema: kMutationResultSchema,
-		callback: (args, extra) {
-			final CallToolResult? idValidationError = validateRequiredStringArgument(
-				args,
-				key: 'id',
-			);
-			if (idValidationError != null) {
-				return idValidationError;
-			}
-			final CallToolResult? nameValidationError = validateRequiredStringArgument(
-				args,
-				key: 'name',
-			);
-			if (nameValidationError != null) {
-				return nameValidationError;
-			}
-			return buildVoidResult(
-				apiCall: () {
-					return service.updateRewriteFolderName(args);
-				},
-				message: 'Successfully updated the rewrite folder name.',
-			);
-		},
-	);
+  if (scope == ReqableToolScope.all) {
+    server.registerTool(
+      'capture_rewrite_update_folder_name',
+      title: 'Rename Rewrite Folder',
+      description: 'Rename an existing rewrite folder by ID.',
+      annotations: ToolAnnotations(
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+      ),
+      inputSchema: const ToolInputSchema(
+        description: 'Provide the rewrite folder ID and the new folder name.',
+        properties: {
+          'id': _kRewriteFolderIdSchema,
+          'name': _kRewriteFolderNameSchema,
+        },
+        required: ['id', 'name'],
+      ),
+      outputSchema: kMutationResultSchema,
+      callback: (args, extra) {
+        final CallToolResult? idValidationError = validateRequiredStringArgument(
+          args,
+          key: 'id',
+        );
+        if (idValidationError != null) {
+          return idValidationError;
+        }
+        final CallToolResult? nameValidationError = validateRequiredStringArgument(
+          args,
+          key: 'name',
+        );
+        if (nameValidationError != null) {
+          return nameValidationError;
+        }
+        return buildVoidResult(
+          apiCall: () {
+            return service.updateRewriteFolderName(args);
+          },
+          message: 'Successfully updated the rewrite folder name.',
+        );
+      },
+    );
+  }
 }
 
 class _CaptureRewriteService {

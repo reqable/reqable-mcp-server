@@ -59,23 +59,23 @@ class Application {
       port: config.port,
     );
     // Register tools here.
+    registerCaptureLiveTools(server, apiClient, config.scope);
+    registerCaptureMirrorTools(server, apiClient, config.scope);
+    registerCaptureGatewayTools(server, apiClient, config.scope);
+    registerCaptureBreakpointTools(server, apiClient, config.scope);
+    registerCaptureRewriteTools(server, apiClient, config.scope);
+    registerCaptureScriptTools(server, apiClient, config.scope);
+    registerCaptureAccessControlTools(server, apiClient, config.scope);
+    registerCaptureNetworkThrottlingTools(server, apiClient, config.scope);
+    registerCaptureReportServerTools(server, apiClient, config.scope);
+    registerCaptureReverseProxyTools(server, apiClient, config.scope);
+    registerCaptureSecondaryProxyTools(server, apiClient, config.scope);
+    registerCaptureSSLProxyingTools(server, apiClient, config.scope);
+    registerCollectionTools(server, apiClient, config.scope);
+    registerEnvironmentTools(server, apiClient, config.scope);
+    registerRestHttpTools(server, apiClient, config.scope);
+    registerRestWebsocketTools(server, apiClient, config.scope);
     registerScriptTools(server, apiClient);
-    registerCaptureLiveTools(server, apiClient);
-    registerCaptureMirrorTools(server, apiClient);
-    registerCaptureGatewayTools(server, apiClient);
-    registerCaptureBreakpointTools(server, apiClient);
-    registerCaptureRewriteTools(server, apiClient);
-    registerCaptureScriptTools(server, apiClient);
-    registerCaptureAccessControlTools(server, apiClient);
-    registerCaptureNetworkThrottlingTools(server, apiClient);
-    registerCaptureReportServerTools(server, apiClient);
-    registerCaptureReverseProxyTools(server, apiClient);
-    registerCaptureSecondaryProxyTools(server, apiClient);
-    registerCaptureSSLProxyingTools(server, apiClient);
-    registerEnvironmentTools(server, apiClient);
-    registerRestCollectionTools(server, apiClient);
-    registerRestHttpTools(server, apiClient);
-    registerRestWebsocketTools(server, apiClient);
     // Register resources here.
     registerScriptResources(server, apiClient);
     return server;

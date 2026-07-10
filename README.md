@@ -108,6 +108,12 @@ Reqable MCP providers more than one hundred MCP tools. They are grouped by capab
 | `script_framework` | Get the Reqable Python script framework before creating or updating script code. | ✅ |
 | `script_template` | Get the Reqable Python script template before creating or updating script code. | ✅ |
 
+### Proxy Configuration
+
+| Tool | Description |  Included in `minimal` |
+| --- | --- |--- |
+| `proxy_set` | Configure the proxy for Reqable, such as turning on/off the system proxy. | ✅ |
+
 ### Live Capture
 
 | Tool | Description | Included in `minimal` |

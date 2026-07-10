@@ -18,6 +18,7 @@ import 'package:reqable_mcp_server/tools/capture/rewrite.dart';
 import 'package:reqable_mcp_server/tools/capture/script.dart';
 import 'package:reqable_mcp_server/tools/collection/collection.dart';
 import 'package:reqable_mcp_server/tools/environment/environment.dart';
+import 'package:reqable_mcp_server/tools/proxy/proxy.dart';
 import 'package:reqable_mcp_server/tools/rest/http.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/script.dart';
@@ -76,6 +77,7 @@ class Application {
     registerRestHttpTools(server, apiClient, config.scope);
     registerRestWebsocketTools(server, apiClient, config.scope);
     registerScriptTools(server, apiClient);
+    registerProxyTools(server, apiClient);
     // Register resources here.
     registerScriptResources(server, apiClient);
     return server;

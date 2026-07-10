@@ -108,6 +108,12 @@ Reqable MCP 提供了上百个 MCP Tool，按功能分类如下。
 | `script_framework` | 获取 Reqable Python 脚本框架内容，创建或更新脚本前应先调用。 | ✅ |
 | `script_template` | 获取 Reqable Python 脚本模板内容，创建或更新脚本前应先调用。 | ✅ |
 
+### 代理控制
+
+| Tool | 功能 | 包含在 `minimal` |
+| --- | --- |--- |
+| `proxy_set` | 控制Reqable中的代理，例如是否覆盖系统代理等。 | ✅ |
+
 ### 抓包列表
 
 | Tool | 功能 | 包含在 `minimal` |

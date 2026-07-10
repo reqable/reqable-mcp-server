@@ -215,6 +215,7 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
       final CallToolResult? codeValidationError = validateRequiredStringArgument(
         args,
         key: 'code',
+        allowWhitespace: true,
       );
       if (codeValidationError != null) {
         return codeValidationError;

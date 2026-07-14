@@ -741,20 +741,50 @@ const JsonObject _kCaptureLiveHttpBodySchema = JsonObject(
 	required: ['text', 'encoding'],
 );
 
-const JsonObject _kCaptureLiveAddressSchema = JsonObject(
-	title: 'Live Capture Address',
-	description: 'A network endpoint address associated with a live capture record.',
+const JsonObject _kCaptureLiveConnectionSchema = JsonObject(
+	title: 'Live Capture Connection Info',
+	description: 'The network connection information associated with a live capture record.',
 	properties: {
-		'ip': JsonString(
-			title: 'IP Address',
-			description: 'The endpoint IP address.',
-		),
-		'port': JsonInteger(
-			title: 'Port',
-			description: 'The endpoint port.',
-		),
+    'id': JsonInteger(
+      title: 'Connection ID',
+      description: 'The numeric connection ID.',
+    ),
+    'timestamp': JsonString(
+      title: 'Connection Timestamp',
+      description: 'The connection start time as an ISO 8601 string.',
+    ),
+		'remote': JsonObject(
+      title: 'Connection Server Address',
+      description: 'The remote server address for the connection.',
+      properties: {
+        'ip': JsonString(
+          title: 'IP Address',
+          description: 'The IP address.',
+        ),
+        'port': JsonInteger(
+          title: 'Port',
+          description: 'The port.',
+        ),
+      },
+      required: ['ip', 'port'],
+    ),
+		'local': JsonObject(
+      title: 'Connection Client Address',
+      description: 'The local client address for the connection.',
+      properties: {
+        'ip': JsonString(
+          title: 'IP Address',
+          description: 'The IP address.',
+        ),
+        'port': JsonInteger(
+          title: 'Port',
+          description: 'The port.',
+        ),
+      },
+      required: ['ip', 'port'],
+    ),
 	},
-	required: ['ip', 'port'],
+	required: ['id', 'timestamp', 'remote', 'local'],
 );
 
 const JsonObject _kCaptureLiveApplicationSchema = JsonObject(
@@ -999,7 +1029,7 @@ const JsonObject _kCaptureLiveRecordSchema = ToolOutputSchema(
 		'id': _kCaptureLiveIdSchema,
 		'uid': _kCaptureLiveUidSchema,
 		'url': _kCaptureLiveUrlSchema,
-		'address': _kCaptureLiveAddressSchema,
+		'connection': _kCaptureLiveConnectionSchema,
 		'application': _kCaptureLiveApplicationSchema,
 		'request': _kCaptureLiveRequestSchema,
 		'response': JsonAnyOf(
@@ -1016,7 +1046,7 @@ const JsonObject _kCaptureLiveRecordSchema = ToolOutputSchema(
 			items: _kCaptureLiveWebSocketMessageSchema,
 		),
 	},
-	required: ['protocol', 'id', 'uid', 'url', 'address', 'request'],
+	required: ['protocol', 'id', 'uid', 'url', 'connection', 'request'],
 );
 
 const JsonObject _kCaptureLiveComposeResultSchema = ToolOutputSchema(

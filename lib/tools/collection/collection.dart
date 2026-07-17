@@ -35,8 +35,11 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.listCollections,
-				contentBuilder: (jsonList) {
-					return 'Found ${jsonList.length} collections.';
+				contentBuilder: (String result, dynamic structuredResult) {
+					if (structuredResult.isEmpty) {
+						return 'There is currently no collection.';
+					}
+					return result;
 				},
 			);
 		},
@@ -61,8 +64,11 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getStructure,
-				contentBuilder: (jsonList) {
-					return 'Retrieved the structure for ${jsonList.length} collections.';
+        contentBuilder: (String result, dynamic structuredResult) {
+					if (structuredResult.isEmpty) {
+						return 'There is currently no collection.';
+					}
+					return result;
 				},
 			);
 		},
@@ -92,9 +98,6 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
 			}
 			return buildContentResult(
 				apiCall: () => service.getCollection(args),
-				contentBuilder: (_) {
-					return 'Successfully retrieved the collection properties.';
-				},
 			);
 		},
 	);
@@ -135,9 +138,6 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
 			}
 			return buildContentResult(
 				apiCall: () => service.createCollection(args),
-				contentBuilder: (_) {
-					return 'Successfully created the collection.';
-				},
 			);
 		},
 	);
@@ -224,9 +224,6 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
       }
 			return buildContentResult(
 				apiCall: () => service.getFolder(args),
-				contentBuilder: (_) {
-					return 'Successfully retrieved the folder properties.';
-				},
 			);
 		},
 	);
@@ -279,9 +276,6 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
 			}
 			return buildContentResult(
 				apiCall: () => service.createFolder(args),
-				contentBuilder: (_) {
-					return 'Successfully created the folder.';
-				},
 			);
 		},
 	);
@@ -408,9 +402,6 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
       }
 			return buildContentResult(
 				apiCall: () => service.getApi(args),
-				contentBuilder: (_) {
-					return 'Successfully retrieved the API details.';
-				},
 			);
 		},
 	);
@@ -460,9 +451,6 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
 			}
 			return buildContentResult(
 				apiCall: () => service.createApi(args),
-				contentBuilder: (_) {
-					return 'Successfully created the API in the collection from cURL.';
-				},
 			);
 		},
 	);
@@ -512,9 +500,6 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
 			}
 			return buildContentResult(
 				apiCall: () => service.addApi(args),
-				contentBuilder: (_) {
-					return 'Successfully added the API to the collection.';
-				},
 			);
 		},
 	);

@@ -23,9 +23,6 @@ void registerCaptureSSLProxyingTools(McpServer server, ReqableApiClient client, 
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getConfig,
-				contentBuilder: (_) {
-					return 'Successfully retrieved SSL proxying configuration.';
-				},
 			);
 		},
 	);
@@ -49,11 +46,11 @@ void registerCaptureSSLProxyingTools(McpServer server, ReqableApiClient client, 
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getActiveSSLProxying,
-				contentBuilder: (jsonMap) {
-					if (jsonMap['profile'] == null) {
+        contentBuilder: (String result, dynamic structuredResult) {
+					if (structuredResult['profile'] == null) {
 						return 'There is currently no active SSL proxying profile.';
 					}
-					return 'Successfully retrieved the active SSL proxying profile.';
+					return result;
 				},
 			);
 		},
@@ -84,9 +81,6 @@ void registerCaptureSSLProxyingTools(McpServer server, ReqableApiClient client, 
 			return buildContentResult(
 				apiCall: () {
 					return service.getSSLProxyingById(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully retrieved the SSL proxying profile details.';
 				},
 			);
 		},
@@ -183,9 +177,6 @@ void registerCaptureSSLProxyingTools(McpServer server, ReqableApiClient client, 
 			return buildContentResult(
 				apiCall: () {
 					return service.createSSLProxying(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully created the SSL proxying profile.';
 				},
 			);
 		},

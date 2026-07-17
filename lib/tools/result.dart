@@ -5,7 +5,7 @@ import 'package:reqable_mcp_server/utils/json.dart';
 
 Future<CallToolResult> buildContentResult({
   required Future<String> Function() apiCall,
-  required String Function(dynamic) contentBuilder,
+  String Function(String result, dynamic structuredResult)? contentBuilder,
 }) async {
   final String result;
   try {
@@ -15,7 +15,7 @@ Future<CallToolResult> buildContentResult({
       return CallToolResult(
         content: [
           TextContent(
-            text: contentBuilder(structuredResult)
+            text: contentBuilder?.call(result, structuredResult) ?? result
           )
         ],
         structuredContent: structuredResult
@@ -24,7 +24,7 @@ Future<CallToolResult> buildContentResult({
       return CallToolResult(
         content: [
           TextContent(
-            text: contentBuilder(structuredResult)
+            text: contentBuilder?.call(result, structuredResult) ?? result
           )
         ],
         structuredContent: {
@@ -35,7 +35,7 @@ Future<CallToolResult> buildContentResult({
       return CallToolResult(
         content: [
           TextContent(
-            text: contentBuilder(result)
+            text: contentBuilder?.call(result, null) ?? result
           )
         ],
       );

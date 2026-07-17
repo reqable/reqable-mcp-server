@@ -23,9 +23,6 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getConfig,
-				contentBuilder: (_) {
-					return 'Successfully retrieved script configuration.';
-				},
 			);
 		},
 	);
@@ -89,8 +86,11 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
       callback: (args, extra) {
         return buildContentResult(
           apiCall: service.listScripts,
-          contentBuilder: (jsonList) {
-            return 'There are currently ${jsonList.length} scripts defined.';
+          contentBuilder: (String result, dynamic structuredResult) {
+            if (structuredResult.isEmpty) {
+              return 'There are currently no script defined.';
+            }
+            return result;
           },
         );
       },
@@ -169,9 +169,6 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
 				apiCall: () {
 					return service.getScriptById(args);
 				},
-				contentBuilder: (_) {
-					return 'Successfully retrieved the script details.';
-				},
 			);
 		},
 	);
@@ -224,9 +221,6 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
 				apiCall: () {
 					return service.createScript(args);
 				},
-				contentBuilder: (_) {
-					return 'Successfully created the script.';
-				},
 			);
 		},
 	);
@@ -259,9 +253,6 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
         return buildContentResult(
           apiCall: () {
             return service.createScriptFolder(args);
-          },
-          contentBuilder: (_) {
-            return 'Successfully created the script folder.';
           },
         );
       },

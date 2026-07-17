@@ -23,9 +23,6 @@ void registerCaptureNetworkThrottlingTools(McpServer server, ReqableApiClient cl
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getConfig,
-				contentBuilder: (_) {
-					return 'Successfully retrieved network throttling configuration.';
-				},
 			);
 		},
 	);
@@ -86,11 +83,11 @@ void registerCaptureNetworkThrottlingTools(McpServer server, ReqableApiClient cl
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getActiveNetworkThrottling,
-				contentBuilder: (jsonMap) {
-					if (jsonMap['profile'] == null) {
+        contentBuilder: (String result, dynamic structuredResult) {
+					if (structuredResult['profile'] == null) {
 						return 'There is currently no active network throttling profile.';
 					}
-					return 'Successfully retrieved the active network throttling profile.';
+					return result;
 				},
 			);
 		},
@@ -121,9 +118,6 @@ void registerCaptureNetworkThrottlingTools(McpServer server, ReqableApiClient cl
 			return buildContentResult(
 				apiCall: () {
 					return service.getNetworkThrottlingById(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully retrieved the network throttling profile details.';
 				},
 			);
 		},
@@ -206,9 +200,6 @@ void registerCaptureNetworkThrottlingTools(McpServer server, ReqableApiClient cl
 			return buildContentResult(
 				apiCall: () {
 					return service.createNetworkThrottling(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully created the network throttling profile.';
 				},
 			);
 		},

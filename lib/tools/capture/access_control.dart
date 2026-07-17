@@ -23,9 +23,6 @@ void registerCaptureAccessControlTools(McpServer server, ReqableApiClient client
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getConfig,
-				contentBuilder: (_) {
-					return 'Successfully retrieved access control configuration.';
-				},
 			);
 		},
 	);
@@ -86,11 +83,11 @@ void registerCaptureAccessControlTools(McpServer server, ReqableApiClient client
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getActiveAccessControl,
-				contentBuilder: (jsonMap) {
-					if (jsonMap['profile'] == null) {
+				contentBuilder: (String result, dynamic structuredResult) {
+					if (structuredResult['profile'] == null) {
 						return 'There is currently no active access control profile.';
 					}
-					return 'Successfully retrieved the active access control profile.';
+					return result;
 				},
 			);
 		},
@@ -121,9 +118,6 @@ void registerCaptureAccessControlTools(McpServer server, ReqableApiClient client
 			return buildContentResult(
 				apiCall: () {
 					return service.getAccessControlById(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully retrieved the access control profile details.';
 				},
 			);
 		},
@@ -206,9 +200,6 @@ void registerCaptureAccessControlTools(McpServer server, ReqableApiClient client
 			return buildContentResult(
 				apiCall: () {
 					return service.createAccessControl(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully created the access control profile.';
 				},
 			);
 		},

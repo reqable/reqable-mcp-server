@@ -54,9 +54,6 @@ void registerRestHttpTools(McpServer server, ReqableApiClient client, ReqableToo
 			}
 			return buildContentResult(
 				apiCall: () => service.createFromUrl(args),
-				contentBuilder: (_) {
-					return 'Successfully created the HTTP API from URL.';
-				},
 			);
 		},
 	);
@@ -101,9 +98,6 @@ void registerRestHttpTools(McpServer server, ReqableApiClient client, ReqableToo
 			}
 			return buildContentResult(
 				apiCall: () => service.createFromCurl(args),
-				contentBuilder: (_) {
-					return 'Successfully created the HTTP API from cURL.';
-				},
 			);
 		},
 	);

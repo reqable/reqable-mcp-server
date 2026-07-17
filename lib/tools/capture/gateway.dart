@@ -23,9 +23,6 @@ void registerCaptureGatewayTools(McpServer server, ReqableApiClient client, Reqa
     callback: (args, extra) {
       return buildContentResult(
         apiCall: service.getConfig,
-        contentBuilder: (_) {
-          return 'Successfully retrieved gateway configuration.';
-        },
       );
     },
   );
@@ -88,8 +85,11 @@ void registerCaptureGatewayTools(McpServer server, ReqableApiClient client, Reqa
     callback: (args, extra) {
       return buildContentResult(
         apiCall: service.listGateways,
-        contentBuilder: (jsonList) {
-          return 'There are currently ${jsonList.length} gateways defined.';
+        contentBuilder: (String result, dynamic structuredResult) {
+          if (structuredResult.isEmpty) {
+            return 'There are currently no gateway defined.';
+          }
+          return result;
         },
       );
     },
@@ -165,9 +165,6 @@ void registerCaptureGatewayTools(McpServer server, ReqableApiClient client, Reqa
         apiCall: () {
           return service.getGatewayById(args);
         },
-        contentBuilder: (_) {
-          return 'Successfully retrieved the gateway details.';
-        },
       );
     },
   );
@@ -209,9 +206,6 @@ void registerCaptureGatewayTools(McpServer server, ReqableApiClient client, Reqa
         apiCall: () {
           return service.createGateway(args);
         },
-        contentBuilder: (_) {
-          return 'Successfully created the gateway.';
-        },
       );
     },
   );
@@ -243,9 +237,6 @@ void registerCaptureGatewayTools(McpServer server, ReqableApiClient client, Reqa
       return buildContentResult(
         apiCall: () {
           return service.createGatewayFolder(args);
-        },
-        contentBuilder: (_) {
-          return 'Successfully created the gateway folder.';
         },
       );
     },

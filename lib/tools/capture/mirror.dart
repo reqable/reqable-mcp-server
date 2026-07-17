@@ -23,9 +23,6 @@ void registerCaptureMirrorTools(McpServer server, ReqableApiClient client, Reqab
     callback: (args, extra) {
       return buildContentResult(
         apiCall: service.getConfig,
-        contentBuilder: (_) {
-          return 'Successfully retrieved mirror configuration.';
-        },
       );
     },
   );
@@ -88,8 +85,11 @@ void registerCaptureMirrorTools(McpServer server, ReqableApiClient client, Reqab
     callback: (args, extra) {
       return buildContentResult(
         apiCall: service.listMirrors,
-        contentBuilder: (jsonList) {
-          return 'There are currently ${jsonList.length} mirrors defined.';
+        contentBuilder: (String result, dynamic structuredResult) {
+          if (structuredResult.isEmpty) {
+            return 'There are currently no mirror defined.';
+          }
+          return result;
         },
       );
     },
@@ -165,9 +165,6 @@ void registerCaptureMirrorTools(McpServer server, ReqableApiClient client, Reqab
         apiCall: () {
           return service.getMirrorById(args);
         },
-        contentBuilder: (_) {
-          return 'Successfully retrieved the mirror details.';
-        },
       );
     },
   );
@@ -220,9 +217,6 @@ void registerCaptureMirrorTools(McpServer server, ReqableApiClient client, Reqab
         apiCall: () {
           return service.createMirror(args);
         },
-        contentBuilder: (_) {
-          return 'Successfully created the mirror.';
-        },
       );
     },
   );
@@ -254,9 +248,6 @@ void registerCaptureMirrorTools(McpServer server, ReqableApiClient client, Reqab
       return buildContentResult(
         apiCall: () {
           return service.createMirrorFolder(args);
-        },
-        contentBuilder: (_) {
-          return 'Successfully created the mirror folder.';
         },
       );
     },

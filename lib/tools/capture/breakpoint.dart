@@ -23,9 +23,6 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, R
     callback: (args, extra) {
       return buildContentResult(
         apiCall: service.getConfig,
-        contentBuilder: (_) {
-          return 'Successfully retrieved breakpoint configuration.';
-        },
       );
     },
   );
@@ -89,8 +86,11 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, R
       callback: (args, extra) {
         return buildContentResult(
           apiCall: service.listBreakpoints,
-          contentBuilder: (jsonList) {
-            return 'There are currently ${jsonList.length} breakpoints defined.';
+          contentBuilder: (String result, dynamic structuredResult) {
+            if (structuredResult.isEmpty) {
+              return 'There are currently no breakpoint defined.';
+            }
+            return result;
           },
         );
       },
@@ -169,9 +169,6 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, R
         apiCall: () {
           return service.getBreakpointById(args);
         },
-        contentBuilder: (_) {
-          return 'Successfully retrieved the breakpoint details.';
-        },
       );
     },
   );
@@ -217,9 +214,6 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, R
         apiCall: () {
           return service.createBreakpoint(args);
         },
-        contentBuilder: (_) {
-          return 'Successfully created the breakpoint.';
-        },
       );
     },
   );
@@ -252,9 +246,6 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, R
         return buildContentResult(
           apiCall: () {
             return service.createBreakpointFolder(args);
-          },
-          contentBuilder: (_) {
-            return 'Successfully created the breakpoint folder.';
           },
         );
       },

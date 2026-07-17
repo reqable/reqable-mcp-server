@@ -23,9 +23,6 @@ void registerCaptureReverseProxyTools(McpServer server, ReqableApiClient client,
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getConfig,
-				contentBuilder: (_) {
-					return 'Successfully retrieved reverse proxy configuration.';
-				},
 			);
 		},
 	);
@@ -88,9 +85,12 @@ void registerCaptureReverseProxyTools(McpServer server, ReqableApiClient client,
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.listReverseProxies,
-				contentBuilder: (jsonList) {
-					return 'There are currently ${jsonList.length} reverse proxies defined.';
-				},
+        contentBuilder: (String result, dynamic structuredResult) {
+          if (structuredResult.isEmpty) {
+            return 'There are currently no reverse proxy defined.';
+          }
+          return result;
+        },
 			);
 		},
 	);
@@ -164,9 +164,6 @@ void registerCaptureReverseProxyTools(McpServer server, ReqableApiClient client,
 			return buildContentResult(
 				apiCall: () {
 					return service.getReverseProxyById(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully retrieved the reverse proxy details.';
 				},
 			);
 		},
@@ -254,9 +251,6 @@ void registerCaptureReverseProxyTools(McpServer server, ReqableApiClient client,
 				apiCall: () {
 					return service.createReverseProxy(args);
 				},
-				contentBuilder: (_) {
-					return 'Successfully created the reverse proxy.';
-				},
 			);
 		},
 	);
@@ -288,9 +282,6 @@ void registerCaptureReverseProxyTools(McpServer server, ReqableApiClient client,
 			return buildContentResult(
 				apiCall: () {
 					return service.createReverseProxyFolder(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully created the reverse proxy folder.';
 				},
 			);
 		},

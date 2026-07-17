@@ -23,9 +23,6 @@ void registerCaptureSecondaryProxyTools(McpServer server, ReqableApiClient clien
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getConfig,
-				contentBuilder: (_) {
-					return 'Successfully retrieved secondary proxy configuration.';
-				},
 			);
 		},
 	);
@@ -86,11 +83,11 @@ void registerCaptureSecondaryProxyTools(McpServer server, ReqableApiClient clien
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getActiveSecondaryProxy,
-				contentBuilder: (jsonMap) {
-					if (jsonMap['profile'] == null) {
-						return 'There is currently no active secondary proxy.';
+        contentBuilder: (String result, dynamic structuredResult) {
+					if (structuredResult['profile'] == null) {
+						return 'There is currently no active secondary proxy profile.';
 					}
-					return 'Successfully retrieved the active secondary proxy.';
+					return result;
 				},
 			);
 		},
@@ -121,9 +118,6 @@ void registerCaptureSecondaryProxyTools(McpServer server, ReqableApiClient clien
 			return buildContentResult(
 				apiCall: () {
 					return service.getSecondaryProxyById(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully retrieved the secondary proxy details.';
 				},
 			);
 		},
@@ -254,9 +248,6 @@ void registerCaptureSecondaryProxyTools(McpServer server, ReqableApiClient clien
 			return buildContentResult(
 				apiCall: () {
 					return service.createSecondaryProxy(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully created the secondary proxy.';
 				},
 			);
 		},

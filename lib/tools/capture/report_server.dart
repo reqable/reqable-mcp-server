@@ -23,9 +23,6 @@ void registerCaptureReportServerTools(McpServer server, ReqableApiClient client,
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getConfig,
-				contentBuilder: (_) {
-					return 'Successfully retrieved report server configuration.';
-				},
 			);
 		},
 	);
@@ -92,9 +89,6 @@ void registerCaptureReportServerTools(McpServer server, ReqableApiClient client,
 			return buildContentResult(
 				apiCall: () {
 					return service.getReportServerById(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully retrieved the report server details.';
 				},
 			);
 		},
@@ -225,9 +219,6 @@ void registerCaptureReportServerTools(McpServer server, ReqableApiClient client,
 			return buildContentResult(
 				apiCall: () {
 					return service.createReportServer(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully created the report server.';
 				},
 			);
 		},

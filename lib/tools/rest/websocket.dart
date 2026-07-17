@@ -54,9 +54,6 @@ void registerRestWebsocketTools(McpServer server, ReqableApiClient client, Reqab
 			}
 			return buildContentResult(
 				apiCall: () => service.createFromUrl(args),
-				contentBuilder: (_) {
-					return 'Successfully created the WebSocket API from URL.';
-				},
 			);
 		},
 	);

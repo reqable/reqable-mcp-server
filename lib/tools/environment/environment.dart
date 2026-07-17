@@ -21,9 +21,6 @@ void registerEnvironmentTools(McpServer server, ReqableApiClient client, Reqable
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.listEnvironments,
-				contentBuilder: (jsonMap) {
-					return 'Successfully retrieved the environments.';
-				},
 			);
 		},
 	);
@@ -46,9 +43,6 @@ void registerEnvironmentTools(McpServer server, ReqableApiClient client, Reqable
 			}
 			return buildContentResult(
 				apiCall: () => service.getEnvironment(args),
-				contentBuilder: (_) {
-					return 'Successfully retrieved the environment.';
-				},
 			);
 		},
 	);
@@ -63,10 +57,11 @@ void registerEnvironmentTools(McpServer server, ReqableApiClient client, Reqable
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getActiveEnvironment,
-				contentBuilder: (jsonObject) {
-					return jsonObject['environment'] == null
-						? 'No active environment is currently selected.'
-						: 'Successfully retrieved the active environment.';
+        contentBuilder: (String result, dynamic structuredResult) {
+					if (structuredResult['environment'] == null) {
+						return 'No environment is currently active.';
+					}
+					return result;
 				},
 			);
 		},
@@ -92,9 +87,6 @@ void registerEnvironmentTools(McpServer server, ReqableApiClient client, Reqable
 			}
 			return buildContentResult(
 				apiCall: () => service.createEnvironment(args),
-				contentBuilder: (_) {
-					return 'Successfully created the environment.';
-				},
 			);
 		},
 	);
@@ -175,9 +167,6 @@ void registerEnvironmentTools(McpServer server, ReqableApiClient client, Reqable
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.listBuiltInVariables,
-				contentBuilder: (jsonList) {
-					return 'Found ${jsonList.length} built-in variables.';
-				},
 			);
 		},
 	);

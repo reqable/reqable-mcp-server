@@ -27,8 +27,8 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client, Reqable
       callback: (args, extra) {
         return buildContentResult(
           apiCall: service.getStatus,
-          contentBuilder: (jsonMap) {
-            return 'Reqable live capture is currently ${jsonMap['status']}.';
+          contentBuilder: (String result, dynamic structuredResult) {
+            return 'Reqable live capture is currently ${structuredResult['status']}.';
           },
         );
       },
@@ -99,8 +99,11 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client, Reqable
 				apiCall: () {
 					return service.filterRecords(args);
 				},
-				contentBuilder: (jsonList) {
-					return 'Matched ${jsonList.length} live capture record${jsonList.length == 1 ? '' : 's'}.';
+				contentBuilder: (String result, dynamic structuredResult) {
+          if (structuredResult.isEmpty) {
+            return 'There are currently no live capture records that match the provided filters.';
+          }
+					return result;
 				},
 			);
 		},
@@ -132,9 +135,6 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client, Reqable
 			return buildContentResult(
 				apiCall: () {
 					return service.getRecord(args);
-				},
-				contentBuilder: (_) {
-					return 'Successfully retrieved the live capture record details.';
 				},
 			);
 		},
@@ -214,9 +214,6 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client, Reqable
 			}
 			return buildContentResult(
 				apiCall: () => service.compose(args),
-				contentBuilder: (_) {
-					return 'Successfully composed the live capture record into a new Reqable tab.';
-				},
 			);
 		},
 	);
@@ -274,9 +271,6 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client, Reqable
       }
 			return buildContentResult(
 				apiCall: () => service.addToCollection(args),
-				contentBuilder: (_) {
-					return 'Successfully added the live capture record to the collection.';
-				},
 			);
 		},
 	);

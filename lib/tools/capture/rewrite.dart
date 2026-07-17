@@ -23,9 +23,6 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, Reqa
 		callback: (args, extra) {
 			return buildContentResult(
 				apiCall: service.getConfig,
-				contentBuilder: (_) {
-					return 'Successfully retrieved rewrite configuration.';
-				},
 			);
 		},
 	);
@@ -89,8 +86,11 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, Reqa
       callback: (args, extra) {
         return buildContentResult(
           apiCall: service.listRewrites,
-          contentBuilder: (jsonList) {
-            return 'There are currently ${jsonList.length} rewrites defined.';
+          contentBuilder: (String result, dynamic structuredResult) {
+            if (structuredResult.isEmpty) {
+              return 'There are currently no rewrite defined.';
+            }
+            return result;
           },
         );
       },
@@ -169,9 +169,6 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, Reqa
 				apiCall: () {
 					return service.getRewriteById(args);
 				},
-				contentBuilder: (_) {
-					return 'Successfully retrieved the rewrite details.';
-				},
 			);
 		},
 	);
@@ -223,9 +220,6 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, Reqa
 				apiCall: () {
 					return service.createRewrite(args);
 				},
-				contentBuilder: (_) {
-					return 'Successfully created the rewrite.';
-				},
 			);
 		},
 	);
@@ -258,9 +252,6 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, Reqa
         return buildContentResult(
           apiCall: () {
             return service.createRewriteFolder(args);
-          },
-          contentBuilder: (_) {
-            return 'Successfully created the rewrite folder.';
           },
         );
       },

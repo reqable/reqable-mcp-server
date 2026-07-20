@@ -23,14 +23,17 @@ import 'package:reqable_mcp_server/tools/rest/http.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/script.dart';
 import 'package:reqable_mcp_server/version.g.dart';
+import 'package:reqable_mcp_server/ws/command.dart';
 
 class Application {
 
   final ReqableMcpConfig config;
 
-  const Application({
+  Application({
     required this.config,
-  });
+  }) {
+    CommandWebSocket(config.host, config.port).connect();
+  }
 
   factory Application.createFromArgs( List<String> arguments) {
     return Application(

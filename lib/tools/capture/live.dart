@@ -720,7 +720,7 @@ const JsonObject _kCaptureLiveHttpBodySchema = JsonObject(
 	properties: {
 		'text': JsonString(
 			title: 'Body Text',
-			description: 'The body content, either decoded text or a base64 string depending on the encoding.',
+			description: 'The body content, either decoded text or a base64 string or a file path depending on the encoding.',
 		),
 		'mime': JsonString(
 			title: 'MIME Type',
@@ -728,8 +728,8 @@ const JsonObject _kCaptureLiveHttpBodySchema = JsonObject(
 		),
 		'encoding': JsonString(
       title: 'Body Encoding',
-      description: 'The encoding used for the body text. `utf8` means plain decoded text, `base64` means binary content encoded as base64.',
-      enumValues: ['utf8', 'base64'],
+      description: 'The encoding used for the body text.\n- `utf8` means plain decoded text.\n- `base64` means binary content encoded as base64.\n- `file` means the body is stored in a file.',
+      enumValues: ['utf8', 'base64', 'file'],
     ),
 	},
 	required: ['text', 'encoding'],

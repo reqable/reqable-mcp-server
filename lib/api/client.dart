@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:reqable_mcp_server/utils/json.dart';
 import 'package:reqable_mcp_server/version.g.dart';
+
+const int _kConnectTimeout = 5;
+const int _kSessionTimeout = 30;
 
 class ReqableApiClient {
 
@@ -17,7 +21,7 @@ class ReqableApiClient {
   }) {
     _httpClient.userAgent = 'reqable-mcp/$kVersionName';
     _httpClient.connectionTimeout = const Duration(
-      seconds: 5
+      seconds: _kConnectTimeout
     );
   }
 
@@ -43,7 +47,10 @@ class ReqableApiClient {
       request.headers.contentType = ContentType.json;
       request.write(body);
     }
-    final HttpClientResponse response = await request.close();
+    final HttpClientResponse response = await request.close()
+      .timeout(const Duration(seconds: _kSessionTimeout), onTimeout: () {
+        throw TimeoutException('${req.route} access is timeout.');
+      },);
     final String body = await response.transform(utf8.decoder).join();
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw ReqableHttpException(

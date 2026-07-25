@@ -2,7 +2,7 @@
 
 [English](README.md) | 简体中文
 
-Reqable MCP Server 是一个使用 Dart 语言编写的 MCP Server，通过 `stdio` 方式与 AI 工具交互。
+Reqable MCP Server 是一个使用 Dart 语言编写的 MCP stdio Server，让 AI 工具连接到[Reqable](https://reqable.com)。
 
 ## 编译与运行
 

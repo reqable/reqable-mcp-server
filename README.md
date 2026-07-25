@@ -2,7 +2,7 @@
 
 English | [简体中文](README.zh-CN.md)
 
-Reqable MCP Server is a Dart-based MCP server that communicates with AI tools over `stdio` and exposes Reqable capabilities through MCP tools.
+Reqable MCP Server is a Dart-based MCP server that communicates with AI tools over `stdio` and exposes [Reqable](https://reqable.com) capabilities through MCP tools.
 
 ## Build And Run
 

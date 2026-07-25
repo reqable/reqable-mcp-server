@@ -16,15 +16,19 @@ jobs:
           - os: macos-latest
             triple: darwin-arm64
             binary: mcp-server
-          - os: macos-13
+            arch: arm64
+          - os: macos-latest
             triple: darwin-x64
             binary: mcp-server
+            arch: x64
           - os: ubuntu-latest
             triple: linux-x64
             binary: mcp-server
+            arch: x64
           - os: windows-latest
             triple: win32-x64
             binary: mcp-server.exe
+            arch: x64
 
     steps:
       - name: Checkout
@@ -32,6 +36,8 @@ jobs:
 
       - name: Setup Dart SDK
         uses: dart-lang/setup-dart@v1
+        with:
+          architecture: ${{ matrix.arch }}
 
       - name: Install dependencies
         run: dart pub get

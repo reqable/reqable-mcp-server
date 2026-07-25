@@ -8,16 +8,21 @@ import 'package:reqable_mcp_server/version.g.dart';
 const int _kConnectTimeout = 5;
 const int _kSessionTimeout = 30;
 
+typedef AliveListener = void Function();
+
 class ReqableApiClient {
 
   final String host;
   final int port;
+  final AliveListener aliveListener;
 
   final HttpClient _httpClient = HttpClient();
+
 
   ReqableApiClient({
     required this.host,
     required this.port,
+    required this.aliveListener,
   }) {
     _httpClient.userAgent = 'reqable-mcp/$kVersionName';
     _httpClient.connectionTimeout = const Duration(
@@ -35,6 +40,7 @@ class ReqableApiClient {
   }
 
   Future<String> _send(String method, Request req) async {
+    aliveListener();
     final HttpClientRequest request;
     try {
       request = await _httpClient.open(method, host, port, req.route);

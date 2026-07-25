@@ -28,11 +28,13 @@ import 'package:reqable_mcp_server/ws/command.dart';
 class Application {
 
   final ReqableMcpConfig config;
+  late final CommandWebSocket commandSocket;
 
   Application({
     required this.config,
   }) {
-    CommandWebSocket(config.host, config.port).connect();
+    commandSocket = CommandWebSocket(config.host, config.port);
+    commandSocket.connect();
   }
 
   factory Application.createFromArgs( List<String> arguments) {
@@ -58,9 +60,15 @@ class Application {
     server.onError = (error) {
       stderr.writeln(error);
     };
+    server.server.oninitialized = () {
+      commandSocket.implementation = server.server.getClientVersion();
+    };
     final ReqableApiClient apiClient = ReqableApiClient(
       host: config.host,
       port: config.port,
+      aliveListener: () {
+        commandSocket.reconnectIfNeeded();
+      },
     );
     // Register tools here.
     registerCaptureLiveTools(server, apiClient, config.scope);

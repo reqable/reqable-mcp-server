@@ -1,0 +1,39 @@
+{
+  "name": "reqable-mcp-server",
+  "version": "1.0.0",
+  "description": "Reqable MCP Server - Connect your AI to Reqable via Model Context Protocol",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reqable/reqable-mcp-server"
+  },
+  "bin": {
+    "reqable-mcp-server": "bin/mcp-server.js"
+  },
+  "files": [
+    "bin/",
+    "install.js",
+    "README.md"
+  ],
+  "scripts": {
+    "postinstall": "node install.js"
+  },
+  "optionalDependencies": {
+    "reqable-mcp-server-darwin-arm64": "1.0.0",
+    "reqable-mcp-server-darwin-x64": "1.0.0",
+    "reqable-mcp-server-linux-x64": "1.0.0",
+    "reqable-mcp-server-win32-x64": "1.0.0"
+  },
+  "keywords": [
+    "reqable",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "api",
+    "debugging",
+    "proxy"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

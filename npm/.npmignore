@@ -1,0 +1,26 @@
+# Exclude source files not needed in the npm package
+.git
+.gitignore
+.dart_tool
+.packages
+pubspec.lock
+pubspec.yaml
+analysis_options.yaml
+CHANGELOG.md
+
+# Only include the npm directory's own README
+../README.md
+../README.zh-CN.md
+
+# Exclude Dart project files
+../bin/
+../lib/
+../test/
+../docs/
+../tools/
+../build/
+
+# Platform packages are published separately
+platform/
+platform-packages/
+../build/

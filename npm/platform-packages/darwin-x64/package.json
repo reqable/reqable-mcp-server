@@ -1,0 +1,13 @@
+{
+  "name": "reqable-mcp-server-darwin-x64",
+  "version": "1.0.0",
+  "description": "macOS Intel native binary for reqable-mcp-server",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reqable/reqable-mcp-server"
+  },
+  "os": ["darwin"],
+  "cpu": ["x64"],
+  "files": ["mcp-server"]
+}

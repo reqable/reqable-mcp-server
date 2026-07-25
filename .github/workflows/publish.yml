@@ -1,0 +1,129 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build ${{ matrix.triple }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            triple: darwin-arm64
+            binary: mcp-server
+          - os: macos-13
+            triple: darwin-x64
+            binary: mcp-server
+          - os: ubuntu-latest
+            triple: linux-x64
+            binary: mcp-server
+          - os: windows-latest
+            triple: win32-x64
+            binary: mcp-server.exe
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Build native binary
+        run: dart compile exe bin/main.dart -o npm/platform-packages/${{ matrix.triple }}/${{ matrix.binary }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.triple }}
+          path: npm/platform-packages/${{ matrix.triple }}/${{ matrix.binary }}
+
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Extract version from pubspec.yaml
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Version: ${VERSION}"
+
+      - name: Download darwin-arm64
+        uses: actions/download-artifact@v4
+        with:
+          name: darwin-arm64
+          path: npm/platform-packages/darwin-arm64
+
+      - name: Download darwin-x64
+        uses: actions/download-artifact@v4
+        with:
+          name: darwin-x64
+          path: npm/platform-packages/darwin-x64
+
+      - name: Download linux-x64
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-x64
+          path: npm/platform-packages/linux-x64
+
+      - name: Download win32-x64
+        uses: actions/download-artifact@v4
+        with:
+          name: win32-x64
+          path: npm/platform-packages/win32-x64
+
+      - name: Make binaries executable
+        run: |
+          chmod +x npm/platform-packages/darwin-arm64/mcp-server
+          chmod +x npm/platform-packages/darwin-x64/mcp-server
+          chmod +x npm/platform-packages/linux-x64/mcp-server
+
+      - name: Update versions & publish platform packages
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+
+          for triple in darwin-arm64 darwin-x64 linux-x64 win32-x64; do
+            echo "--- Publishing reqable-mcp-server-${triple}@${VERSION} ---"
+            (cd npm/platform-packages/${triple} && \
+              npm version ${VERSION} --no-git-tag-version --allow-same-version && \
+              npm publish --access public)
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Update version & publish main package
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          cd npm
+          npm version ${VERSION} --no-git-tag-version --allow-same-version
+          # Sync optionalDependencies versions
+          node -e "
+            const pkg = require('./package.json');
+            for (const dep of Object.keys(pkg.optionalDependencies)) {
+              pkg.optionalDependencies[dep] = '${VERSION}';
+            }
+            require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+          cat package.json
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

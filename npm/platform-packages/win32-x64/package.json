@@ -1,0 +1,13 @@
+{
+  "name": "reqable-mcp-server-win32-x64",
+  "version": "1.0.0",
+  "description": "Windows x86_64 native binary for reqable-mcp-server",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reqable/reqable-mcp-server"
+  },
+  "os": ["win32"],
+  "cpu": ["x64"],
+  "files": ["mcp-server.exe"]
+}

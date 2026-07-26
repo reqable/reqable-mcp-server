@@ -2,51 +2,45 @@
 
 English | [简体中文](README.zh-CN.md)
 
-Reqable MCP Server is a Dart-based MCP server that communicates with AI tools over `stdio` and exposes Reqable capabilities through MCP tools.
+Reqable MCP Server is a Dart-based MCP server that communicates with AI tools over `stdio` and exposes [Reqable](https://reqable.com) capabilities through MCP tools.
 
-## Build And Run
+## Reqable Installation
 
-### Requirements
+https://reqable.com/download/
 
-- Dart SDK v3.0+
+## MCP Configuration
 
-### Install Dependencies
-
-```bash
-dart pub get
+```json
+{
+  "mcpServers": {
+    "reqable-mcp": {
+      "command": "npx",
+      "args": ["-y", "reqable-mcp-server"]
+    }
+  }
+}
 ```
 
-### Run Locally
-
-```bash
-dart run bin/main.dart
-```
-
-To connect to a specific Reqable API endpoint, pass the startup arguments explicitly:
-
-```bash
-dart run bin/main.dart --host 127.0.0.1 --port 9000
-```
-
-### Compile An Executable
-
-```bash
-dart compile exe bin/main.dart -o build/reqable-mcp-server
-```
-
-Run the compiled binary:
-
-```bash
-./build/reqable-mcp-server
-```
-
-## Parameters
+## Parameters (Optional)
 
 | Parameter | Short | Description | Default |
 | --- | --- | --- | --- |
 | `--host` | `-h` | Optional, Reqable API host. | `127.0.0.1` |
 | `--port` | `-p` | Optional,Reqable API port. | Uses `proxyPort` from local Reqable config when available, otherwise falls back to `9000` |
 | `--scope` | `-s` | Optional, control which tools are registered. `minimal` will register necessary tools, `all` will register all tools. | `minimal` |
+
+
+## How to use
+
+Configure the Reqable MCP server in your AI Agent, you can let the agent operate Reqable for tasks such as:
+
+- Analyze the captured request with ID 1.
+- Analyze requests related to reqable.com.
+- Create breakpoints for all requests to the reqable.com domain.
+- Create a new script rule to AES-decrypt the response of captured request ID 2 and print the decrypted data to the console.
+- Create a new rewrite rule to replace all occurrences of 123 with 456 in the response body of https://reqable.com.
+- Create an API collection named Development, save all APIs used by this project into it, and add documentation.
+
 
 ## Tool Overview
 
@@ -285,3 +279,7 @@ Reqable MCP providers more than one hundred MCP tools. They are grouped by capab
 | `capture_access_control_create` | Create a new access control profile. | ❌ |
 | `capture_access_control_delete` | Delete one or more access control profiles. | ❌ |
 | `capture_access_control_update` | Update an access control profile. | ❌ |
+
+## Build From Source
+
+See [BUILD.md](BUILD.md) for build and run instructions.

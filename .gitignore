@@ -3,3 +3,8 @@
 .dart_tool/
 build/
 .DS_Store
+
+# npm compiled binaries (built by CI)
+npm/platform/
+npm/platform-packages/*/mcp-server
+npm/platform-packages/*/mcp-server.exe

@@ -2,51 +2,43 @@
 
 [English](README.md) | 简体中文
 
-Reqable MCP Server 是一个使用 Dart 语言编写的 MCP Server，通过 `stdio` 方式与 AI 工具交互。
+Reqable MCP Server 是一个使用 Dart 语言编写的 MCP stdio Server，让 AI 工具连接到[Reqable](https://reqable.com)。
 
-## 编译与运行
+## Reqable 安装
 
-### 环境要求
+https://reqable.com/download/
 
-- Dart SDK v3.0+
+## MCP 配置
 
-### 安装依赖
-
-```bash
-dart pub get
+```json
+{
+  "mcpServers": {
+    "reqable": {
+      "command": "npx",
+      "args": ["-y", "reqable-mcp-server"]
+    }
+  }
+}
 ```
 
-### 本地运行
-
-```bash
-dart run bin/main.dart
-```
-
-如果需要显式指定 Reqable API 地址，可以传入启动参数：
-
-```bash
-dart run bin/main.dart --host 127.0.0.1 --port 9000
-```
-
-### 编译可执行文件
-
-```bash
-dart compile exe bin/main.dart -o build/reqable-mcp-server
-```
-
-编译后可直接运行：
-
-```bash
-./build/reqable-mcp-server
-```
-
-## 参数说明
+## 参数说明（可选）
 
 | 参数 | 缩写 | 说明 | 默认值 |
 | --- | --- | --- | --- |
 | `--host` | `-h` | 可选，Reqable API 服务地址。 | `127.0.0.1` |
 | `--port` | `-p` | 可选，Reqable API 服务端口。 | 优先读取 Reqable 本地配置中的 `proxyPort`，读取失败时回退到 `9000` |
 | `--scope` | `-s` | 可选，控制注册哪些工具， `minimal` 仅注册常用工具, `all` 注册全部工具。 | `minimal` |
+
+## 如何使用
+
+在AI助手中配置好Reqable MCP服务器后，便可以让AI助手来操控Reqable，例如：
+
+- 分析抓包ID 1的这条请求。
+- 分析 reqable.com 相关的请求。
+- 对全部的 reqable.com 域名的请求创建断点。
+- 新建一个脚本规则，对抓包ID 2请求的响应进行AES解密，并输出解密后数据到控制台。
+- 新建一个重写规则，将https://reqable.com的响应体中全部的 123 都改成 456 。
+- 新建一个名称为Development的API集合，将本项目中调用到的全部的接口保存到其中，并添加说明文档。
 
 ## Tool 总览
 
@@ -285,3 +277,7 @@ Reqable MCP 提供了上百个 MCP Tool，按功能分类如下。
 | `capture_access_control_create` | 创建新的访问控制配置。 | ❌ |
 | `capture_access_control_delete` | 删除一个或多个访问控制配置。 | ❌ |
 | `capture_access_control_update` | 更新访问控制配置。 | ❌ |
+
+## 从源码编译
+
+请参考 [BUILD.md](BUILD.md) 了解编译与运行说明。

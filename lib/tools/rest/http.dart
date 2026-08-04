@@ -158,40 +158,62 @@ class _RestHttpService {
 
 }
 
+const Map<String, JsonSchema> kRestHttpProperties = {
+  'type': JsonString(
+    title: 'API Type',
+    description: 'The API type, which must be "api" for HTTP APIs.',
+    enumValues: ['api'],
+  ),
+  'name': JsonString(
+    title: 'Name',
+    description: 'The display name of the HTTP API.',
+  ),
+  'method': JsonString(
+    title: 'HTTP Method',
+    description: 'The HTTP request method.',
+  ),
+  'url': _kRestRequestUrlSchema,
+  'headers': JsonArray(
+    title: 'Headers',
+    description: 'The HTTP request headers, including optional internal headers.',
+    items: _kRestRequestHeaderSchema,
+  ),
+  'body': _kRestHttpRequestBodySchema,
+  'script': kRestHttpScriptSchema,
+  'authorization': kRestRequestAuthorizationSchema,
+  'documentation': kRestDocumentationSchema,
+};
+
 const JsonObject kRestHttpSchema = ToolInputSchema(
 	title: 'HTTP API Payload',
-	description: 'The complete Reqable RestHttp object used to create or update an HTTP API tab.',
+	description: 'The complete Reqable RestHttp object.',
 	properties: {
-		'id': JsonString(
-			title: 'ID',
-			description: 'The unique API identifier.',
-		),
-    'type': JsonString(
-      title: 'API Type',
-      description: 'The API type, which must be "api" for HTTP APIs.',
-      enumValues: ['api'],
+    'id': JsonString(
+      title: 'ID',
+      description: 'The unique API identifier.',
     ),
-		'name': JsonString(
-			title: 'Name',
-			description: 'The display name of the HTTP API.',
-		),
-		'method': JsonString(
-			title: 'HTTP Method',
-			description: 'The HTTP request method.',
-		),
-		'url': _kRestRequestUrlSchema,
-		'headers': JsonArray(
-			title: 'Headers',
-			description: 'The HTTP request headers, including optional internal headers.',
-			items: _kRestRequestHeaderSchema,
-		),
-		'body': _kRestHttpRequestBodySchema,
-		'script': kRestHttpScriptSchema,
-		'authorization': kRestRequestAuthorizationSchema,
-		'documentation': kRestDocumentationSchema,
-	},
+    ...kRestHttpProperties,
+  },
 	required: [
 		'id',
+    'type',
+		'name',
+		'method',
+		'url',
+		'headers',
+		'body',
+		'script',
+		'authorization',
+		'documentation',
+	],
+	additionalProperties: true,
+);
+
+const JsonObject kRestHttpWithoutIdSchema = ToolInputSchema(
+	title: 'HTTP API Payload',
+	description: 'The Reqable RestHttp object used to create an HTTP API.',
+	properties: kRestHttpProperties,
+	required: [
     'type',
 		'name',
 		'method',

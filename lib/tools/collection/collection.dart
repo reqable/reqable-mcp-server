@@ -471,7 +471,7 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
 					title: 'Parent Folder ID',
 					description: 'Optional parent folder ID.',
 				),
-        'api': kCollectionApiSchema,
+        'api': kCollectionApiWithoutIdSchema,
       },
       required: ['collectionId', 'api'],
     ),
@@ -860,4 +860,13 @@ const JsonSchema kCollectionApiSchema = JsonOneOf(
   ],
   title: 'Collection API',
   description: 'A Reqable HTTP or WebSocket API in a collection.',
+);
+
+const JsonSchema kCollectionApiWithoutIdSchema = JsonOneOf(
+  [
+    kRestHttpWithoutIdSchema,
+    kRestWebSocketWithoutIdSchema,
+  ],
+  title: 'Collection API',
+  description: 'A Reqable HTTP or WebSocket API used to add into a collection.',
 );

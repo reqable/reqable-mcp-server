@@ -105,38 +105,57 @@ class _RestWebsocketService {
 
 }
 
+const Map<String, JsonSchema> kRestWebSocketProperties = {
+  'type': JsonString(
+    title: 'API Type',
+    description: 'The API type, which must be "websocket" for WebSocket APIs.',
+    enumValues: ['websocket'],
+  ),
+  'name': JsonString(
+    title: 'Name',
+    description: 'The display name of the WebSocket API.',
+  ),
+  'url': _kRestWebSocketRequestUrlSchema,
+  'headers': JsonArray(
+    title: 'Headers',
+    description: 'The WebSocket handshake request headers, including optional internal headers.',
+    items: _kRestWebSocketHeaderSchema,
+  ),
+  'sendType': JsonString(
+    title: 'Default Send Type',
+    description: 'The default message editor mode used when sending WebSocket messages.',
+    enumValues: ['text', 'json', 'xml', 'binaryBase64', 'binaryHex', 'binaryFile'],
+  ),
+  'documentation': kRestDocumentationSchema,
+};
+
 const JsonObject kRestWebSocketSchema = ToolInputSchema(
 	title: 'WebSocket API Payload',
-	description: 'The complete Reqable RestWebSocket object used to create or update a WebSocket API tab.',
+	description: 'The complete Reqable RestWebSocket object.',
 	properties: {
 		'id': JsonString(
 			title: 'ID',
 			description: 'The unique WebSocket API identifier.',
 		),
-    'type': JsonString(
-      title: 'API Type',
-      description: 'The API type, which must be "websocket" for WebSocket APIs.',
-      enumValues: ['websocket'],
-    ),
-		'name': JsonString(
-			title: 'Name',
-			description: 'The display name of the WebSocket API.',
-		),
-		'url': _kRestWebSocketRequestUrlSchema,
-		'headers': JsonArray(
-			title: 'Headers',
-			description: 'The WebSocket handshake request headers, including optional internal headers.',
-			items: _kRestWebSocketHeaderSchema,
-		),
-		'sendType': JsonString(
-			title: 'Default Send Type',
-			description: 'The default message editor mode used when sending WebSocket messages.',
-			enumValues: ['text', 'json', 'xml', 'binaryBase64', 'binaryHex', 'binaryFile'],
-		),
-		'documentation': kRestDocumentationSchema,
+    ...kRestWebSocketProperties,
 	},
 	required: [
 		'id',
+    'type',
+		'name',
+		'url',
+		'headers',
+		'sendType',
+		'documentation',
+	],
+	additionalProperties: true,
+);
+
+const JsonObject kRestWebSocketWithoutIdSchema = ToolInputSchema(
+	title: 'WebSocket API Payload',
+	description: 'The Reqable RestWebSocket object used to create a WebSocket API.',
+	properties: kRestWebSocketProperties,
+	required: [
     'type',
 		'name',
 		'url',

@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     name: Build ${{ matrix.triple }}
@@ -103,7 +107,7 @@ jobs:
           chmod +x npm/platform-packages/darwin-x64/mcp-server
           chmod +x npm/platform-packages/linux-x64/mcp-server
 
-      - name: Update versions & publish platform packages
+      - name: Publish platform packages
         run: |
           VERSION=${{ steps.version.outputs.version }}
 
@@ -111,12 +115,10 @@ jobs:
             echo "--- Publishing reqable-mcp-server-${triple}@${VERSION} ---"
             (cd npm/platform-packages/${triple} && \
               npm version ${VERSION} --no-git-tag-version --allow-same-version && \
-              npm publish --access public)
+              npm publish --access public --provenance)
           done
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Update version & publish main package
+      - name: Publish main package
         run: |
           VERSION=${{ steps.version.outputs.version }}
           cd npm
@@ -130,6 +132,4 @@ jobs:
             require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
           "
           cat package.json
-          npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          npm publish --access public --provenance

@@ -1,6 +1,7 @@
 import 'package:mcp_dart/mcp_dart.dart';
 import 'package:reqable_mcp_server/api/client.dart';
 import 'package:reqable_mcp_server/tools/collection/collection.dart';
+import 'package:reqable_mcp_server/tools/rest/grpc.dart';
 import 'package:reqable_mcp_server/tools/rest/http.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
@@ -1049,7 +1050,8 @@ const JsonObject _kCaptureLiveComposeResultSchema = ToolOutputSchema(
 	properties: {
 		'api': JsonOneOf([
       kRestHttpSchema,
-      kRestWebSocketSchema
+      kRestWebSocketSchema,
+      kRestGrpcSchema,
     ]),
 	},
 	required: ['api'],

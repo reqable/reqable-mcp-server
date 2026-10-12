@@ -1,6 +1,7 @@
 import 'package:mcp_dart/mcp_dart.dart';
 import 'package:reqable_mcp_server/api/client.dart';
 import 'package:reqable_mcp_server/tools/rest/base.dart';
+import 'package:reqable_mcp_server/tools/rest/grpc.dart';
 import 'package:reqable_mcp_server/tools/rest/http.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
@@ -857,6 +858,7 @@ const JsonSchema kCollectionApiSchema = JsonOneOf(
   [
     kRestHttpSchema,
     kRestWebSocketSchema,
+    kRestGrpcSchema,
   ],
   title: 'Collection API',
   description: 'A Reqable HTTP or WebSocket API in a collection.',
@@ -866,6 +868,7 @@ const JsonSchema kCollectionApiWithoutIdSchema = JsonOneOf(
   [
     kRestHttpWithoutIdSchema,
     kRestWebSocketWithoutIdSchema,
+    kRestGrpcWithoutIdSchema,
   ],
   title: 'Collection API',
   description: 'A Reqable HTTP or WebSocket API used to add into a collection.',

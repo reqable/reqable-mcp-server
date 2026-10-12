@@ -21,6 +21,7 @@ import 'package:reqable_mcp_server/tools/environment/environment.dart';
 import 'package:reqable_mcp_server/tools/proxy/proxy.dart';
 import 'package:reqable_mcp_server/tools/rest/grpc.dart';
 import 'package:reqable_mcp_server/tools/rest/http.dart';
+import 'package:reqable_mcp_server/tools/rest/raw.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/script.dart';
 import 'package:reqable_mcp_server/version.g.dart';
@@ -88,6 +89,7 @@ class Application {
     registerEnvironmentTools(server, apiClient, config.scope);
     registerRestHttpTools(server, apiClient, config.scope);
     registerRestGrpcTools(server, apiClient, config.scope);
+    registerRestRawTools(server, apiClient, config.scope);
     registerRestWebsocketTools(server, apiClient, config.scope);
     registerScriptTools(server, apiClient);
     registerProxyTools(server, apiClient);

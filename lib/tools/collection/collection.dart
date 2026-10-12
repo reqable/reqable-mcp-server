@@ -3,6 +3,7 @@ import 'package:reqable_mcp_server/api/client.dart';
 import 'package:reqable_mcp_server/tools/rest/base.dart';
 import 'package:reqable_mcp_server/tools/rest/grpc.dart';
 import 'package:reqable_mcp_server/tools/rest/http.dart';
+import 'package:reqable_mcp_server/tools/rest/raw.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/result.dart';
 import 'package:reqable_mcp_server/tools/schema.dart';
@@ -858,6 +859,7 @@ const JsonSchema kCollectionApiSchema = JsonOneOf(
   [
     kRestHttpSchema,
     kRestWebSocketSchema,
+    kRestRawSchema,
     kRestGrpcSchema,
   ],
   title: 'Collection API',
@@ -868,6 +870,7 @@ const JsonSchema kCollectionApiWithoutIdSchema = JsonOneOf(
   [
     kRestHttpWithoutIdSchema,
     kRestWebSocketWithoutIdSchema,
+    kRestRawWithoutIdSchema,
     kRestGrpcWithoutIdSchema,
   ],
   title: 'Collection API',

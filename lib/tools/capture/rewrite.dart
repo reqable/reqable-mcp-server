@@ -5,8 +5,8 @@ import 'package:reqable_mcp_server/tools/schema.dart';
 import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
-	if (!scope.toolGroups.contains(ReqableToolGroup.captureRewrite)) {
+void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, McpToolScope scope) {
+	if (!scope.toolGroups.contains(McpToolGroup.captureRewrite)) {
 		return;
 	}
 	final _CaptureRewriteService service = _CaptureRewriteService(
@@ -63,7 +63,7 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, Reqa
 			);
 		},
 	);
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_rewrite_list',
       title: 'List Rewrites',
@@ -96,7 +96,7 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, Reqa
       },
     );
   }
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_rewrite_set_item_enabled',
       title: 'Set Rewrites Enabled State',
@@ -223,7 +223,7 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, Reqa
 			);
 		},
 	);
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_rewrite_create_folder',
       title: 'Create Rewrite Folder',
@@ -292,7 +292,7 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, Reqa
 			);
 		},
 	);
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_rewrite_delete_folder',
       title: 'Delete Rewrite Folders',
@@ -349,7 +349,7 @@ void registerCaptureRewriteTools(McpServer server, ReqableApiClient client, Reqa
       );
     },
   );
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_rewrite_update_folder_name',
       title: 'Rename Rewrite Folder',

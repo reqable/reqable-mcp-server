@@ -5,8 +5,8 @@ import 'package:reqable_mcp_server/tools/schema.dart';
 import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCaptureScriptTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
-	if (!scope.toolGroups.contains(ReqableToolGroup.captureScript)) {
+void registerCaptureScriptTools(McpServer server, ReqableApiClient client, McpToolScope scope) {
+	if (!scope.toolGroups.contains(McpToolGroup.captureScript)) {
 		return;
 	}
 	final _CaptureScriptService service = _CaptureScriptService(
@@ -63,7 +63,7 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
 			);
 		},
 	);
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_script_list',
       title: 'List Scripts',
@@ -96,7 +96,7 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
       },
     );
   }
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_script_set_item_enabled',
       title: 'Set Scripts Enabled State',
@@ -224,7 +224,7 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
 			);
 		},
 	);
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_script_create_folder',
       title: 'Create Script Folder',
@@ -293,7 +293,7 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
 			);
 		},
 	);
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_script_delete_folder',
       title: 'Delete Script Folders',
@@ -350,7 +350,7 @@ void registerCaptureScriptTools(McpServer server, ReqableApiClient client, Reqab
       );
     },
   );
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_script_update_folder_name',
       title: 'Rename Script Folder',

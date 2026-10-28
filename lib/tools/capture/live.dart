@@ -9,14 +9,14 @@ import 'package:reqable_mcp_server/tools/schema.dart';
 import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCaptureLiveTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
-  if (!scope.toolGroups.contains(ReqableToolGroup.captureLive)) {
+void registerCaptureLiveTools(McpServer server, ReqableApiClient client, McpToolScope scope) {
+  if (!scope.toolGroups.contains(McpToolGroup.captureLive)) {
     return;
   }
 	final _CaptureLiveService service = _CaptureLiveService(
 		client: client,
 	);
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_live_status',
       title: 'Get Live Capture Status',
@@ -140,7 +140,7 @@ void registerCaptureLiveTools(McpServer server, ReqableApiClient client, Reqable
 			);
 		},
 	);
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_live_clear',
       title: 'Clear Live Capture Records',

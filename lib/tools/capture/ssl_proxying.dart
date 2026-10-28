@@ -5,8 +5,8 @@ import 'package:reqable_mcp_server/tools/schema.dart';
 import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCaptureSSLProxyingTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
-	if (!scope.toolGroups.contains(ReqableToolGroup.captureSSLProxying)) {
+void registerCaptureSSLProxyingTools(McpServer server, ReqableApiClient client, McpToolScope scope) {
+	if (!scope.toolGroups.contains(McpToolGroup.captureSSLProxying)) {
 		return;
 	}
 	final _CaptureSSLProxyingService service = _CaptureSSLProxyingService(

@@ -5,8 +5,8 @@ import 'package:reqable_mcp_server/tools/result.dart';
 import 'package:reqable_mcp_server/tools/schema.dart';
 import 'package:reqable_mcp_server/tools/tool.dart';
 
-void registerRestRawTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
-	if (!scope.toolGroups.contains(ReqableToolGroup.rest)) {
+void registerRestRawTools(McpServer server, ReqableApiClient client, McpToolScope scope) {
+	if (!scope.toolGroups.contains(McpToolGroup.rest)) {
 		return;
 	}
 	final _RestRawService service = _RestRawService(

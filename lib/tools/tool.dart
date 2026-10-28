@@ -1,15 +1,15 @@
-const List<ReqableToolGroup> _kScopeMinimal = [
-  ReqableToolGroup.captureLive,
-  ReqableToolGroup.captureBreakpoint,
-  ReqableToolGroup.captureRewrite,
-  ReqableToolGroup.captureScript,
-  ReqableToolGroup.collection,
-  ReqableToolGroup.rest,
+const List<McpToolGroup> _kScopeMinimal = [
+  McpToolGroup.captureLive,
+  McpToolGroup.captureBreakpoint,
+  McpToolGroup.captureRewrite,
+  McpToolGroup.captureScript,
+  McpToolGroup.collection,
+  McpToolGroup.rest,
 ];
 
-const List<ReqableToolGroup> _kScopeAll = ReqableToolGroup.values;
+const List<McpToolGroup> _kScopeAll = McpToolGroup.values;
 
-enum ReqableToolGroup {
+enum McpToolGroup {
   captureLive,
   captureAccessControl,
   captureBreakpoint,
@@ -27,17 +27,17 @@ enum ReqableToolGroup {
   rest,
 }
 
-enum ReqableToolScope {
+enum McpToolScope {
   minimal,
   all,
 }
 
-extension ReqableToolScopeExtension on ReqableToolScope {
-  List<ReqableToolGroup> get toolGroups {
+extension McpToolScopeExtension on McpToolScope {
+  List<McpToolGroup> get toolGroups {
     switch (this) {
-      case ReqableToolScope.minimal:
+      case McpToolScope.minimal:
         return _kScopeMinimal;
-      case ReqableToolScope.all:
+      case McpToolScope.all:
         return _kScopeAll;
     }
   }

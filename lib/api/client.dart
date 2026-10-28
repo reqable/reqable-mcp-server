@@ -53,6 +53,11 @@ class ReqableApiClient {
       request.headers.contentType = ContentType.json;
       request.write(body);
     }
+    // Add auth header if needed
+    final String? token = Platform.environment['REQABLE_TOKEN'] ?? Platform.environment['ACCESS_TOKEN'];
+    if (token != null && token.isNotEmpty) {
+      request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
+    }
     final HttpClientResponse response = await request.close()
       .timeout(const Duration(seconds: _kSessionTimeout), onTimeout: () {
         throw TimeoutException('${req.route} access is timeout.');

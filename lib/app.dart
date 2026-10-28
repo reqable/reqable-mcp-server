@@ -25,25 +25,12 @@ import 'package:reqable_mcp_server/tools/rest/raw.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/script.dart';
 import 'package:reqable_mcp_server/version.g.dart';
-import 'package:reqable_mcp_server/ws/command.dart';
 
-class Application {
+abstract class Application {
 
-  final ReqableMcpConfig config;
-  late final CommandWebSocket commandSocket;
+  final McpServerConfig config;
 
-  Application({
-    required this.config,
-  }) {
-    commandSocket = CommandWebSocket(config.host, config.port);
-    commandSocket.connect();
-  }
-
-  factory Application.createFromArgs( List<String> arguments) {
-    return Application(
-      config: ReqableMcpConfig.fromArgs(arguments),
-    );
-  }
+  const Application(this.config);
 
   McpServer createServer() {
     final McpServer server = McpServer(
@@ -63,14 +50,15 @@ class Application {
       stderr.writeln(error);
     };
     server.server.oninitialized = () {
-      commandSocket.implementation = server.server.getClientVersion();
+      onInitialized(server);
+    };
+    server.server.onclose = () {
+      onClose(server);
     };
     final ReqableApiClient apiClient = ReqableApiClient(
       host: config.host,
       port: config.port,
-      aliveListener: () {
-        commandSocket.reconnectIfNeeded();
-      },
+      aliveListener: () => onAlive(server),
     );
     // Register tools here.
     registerCaptureLiveTools(server, apiClient, config.scope);
@@ -96,6 +84,15 @@ class Application {
     // Register resources here.
     registerScriptResources(server, apiClient);
     return server;
+  }
+
+  void onInitialized(McpServer server) {
+  }
+
+  void onAlive(McpServer server) {
+  }
+
+  void onClose(McpServer server) {
   }
 
 }

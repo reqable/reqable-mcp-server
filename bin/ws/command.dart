@@ -39,7 +39,7 @@ class CommandWebSocket {
   void _connect() {
     _connectionId++;
     WebSocket.connect(
-      'ws://$host:$port/mcp',
+      'ws://$host:$port/mcp/command',
     ).then((WebSocket socket) {
       _reconnectAttempts = 0;
       _socket = socket;

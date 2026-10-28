@@ -10,8 +10,8 @@ import 'package:reqable_mcp_server/tools/schema.dart';
 import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
-	if (!scope.toolGroups.contains(ReqableToolGroup.collection)) {
+void registerCollectionTools(McpServer server, ReqableApiClient client, McpToolScope scope) {
+	if (!scope.toolGroups.contains(McpToolGroup.collection)) {
 		return;
 	}
 	final _RestCollectionService service = _RestCollectionService(
@@ -281,7 +281,7 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
 			);
 		},
 	);
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'collection_folder_update',
       title: 'Update Folder Properties',
@@ -330,7 +330,7 @@ void registerCollectionTools(McpServer server, ReqableApiClient client, ReqableT
       },
     );
   }
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'collection_folder_delete',
       title: 'Delete Folder',

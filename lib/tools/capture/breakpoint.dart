@@ -5,8 +5,8 @@ import 'package:reqable_mcp_server/tools/schema.dart';
 import 'package:reqable_mcp_server/tools/tool.dart';
 import 'package:reqable_mcp_server/tools/validate.dart';
 
-void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, ReqableToolScope scope) {
-  if (!scope.toolGroups.contains(ReqableToolGroup.captureBreakpoint)) {
+void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, McpToolScope scope) {
+  if (!scope.toolGroups.contains(McpToolGroup.captureBreakpoint)) {
     return;
   }
   final _CaptureBreakpointService service = _CaptureBreakpointService(
@@ -63,7 +63,7 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, R
       );
     },
   );
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_breakpoint_list',
       title: 'List Breakpoints',
@@ -96,7 +96,7 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, R
       },
     );
   }
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_breakpoint_set_item_enabled',
       title: 'Set Breakpoints Enabled State',
@@ -217,7 +217,7 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, R
       );
     },
   );
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_breakpoint_create_folder',
       title: 'Create Breakpoint Folder',
@@ -286,7 +286,7 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, R
       );
     },
   );
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_breakpoint_delete_folder',
       title: 'Delete Breakpoint Folders',
@@ -343,7 +343,7 @@ void registerCaptureBreakpointTools(McpServer server, ReqableApiClient client, R
       );
     },
   );
-  if (scope == ReqableToolScope.all) {
+  if (scope == McpToolScope.all) {
     server.registerTool(
       'capture_breakpoint_update_folder_name',
       title: 'Rename Breakpoint Folder',

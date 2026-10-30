@@ -14,6 +14,7 @@ class ReqableApiClient {
 
   final String host;
   final int port;
+  final String? token;
   final AliveListener aliveListener;
 
   final HttpClient _httpClient = HttpClient();
@@ -23,6 +24,7 @@ class ReqableApiClient {
     required this.host,
     required this.port,
     required this.aliveListener,
+    required this.token,
   }) {
     _httpClient.userAgent = 'reqable-mcp/$kVersionName';
     _httpClient.connectionTimeout = const Duration(
@@ -47,16 +49,14 @@ class ReqableApiClient {
     } catch (error) {
       throw ReqableNotConnectedException(host: host, port: port);
     }
+    if (token?.isNotEmpty ?? false) {
+      request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
+    }
     final Map<String, dynamic> jsonMap = req.toJson();
     if (jsonMap.isNotEmpty) {
       final String body = jsonEncode(jsonMap);
       request.headers.contentType = ContentType.json;
       request.write(body);
-    }
-    // Add auth header if needed
-    final String? token = Platform.environment['REQABLE_TOKEN'] ?? Platform.environment['ACCESS_TOKEN'];
-    if (token != null && token.isNotEmpty) {
-      request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
     }
     final HttpClientResponse response = await request.close()
       .timeout(const Duration(seconds: _kSessionTimeout), onTimeout: () {

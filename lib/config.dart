@@ -13,11 +13,13 @@ class McpServerConfig {
 
   final String host;
   final int port;
+  final String? token;
   final McpToolScope scope;
 
   const McpServerConfig({
     required this.host,
     required this.port,
+    required this.token,
     required this.scope,
   });
 
@@ -25,6 +27,7 @@ class McpServerConfig {
     final ArgParser parser = ArgParser();
     parser.addOption('host', abbr: 'h');
     parser.addOption('port', abbr: 'p');
+    parser.addOption('token', abbr: 't');
     parser.addOption(
       'scope', abbr: 's',
       defaultsTo: McpToolScope.minimal.name,
@@ -68,6 +71,7 @@ class McpServerConfig {
         (s) => s.name == scope,
         orElse: () => McpToolScope.minimal,
       ),
+      token: argResults.option('token') ?? Platform.environment['REQABLE_TOKEN'] ?? Platform.environment['ACCESS_TOKEN'],
     );
   }
 

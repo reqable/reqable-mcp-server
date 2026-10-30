@@ -58,6 +58,7 @@ abstract class Application {
     final ReqableApiClient apiClient = ReqableApiClient(
       host: config.host,
       port: config.port,
+      token: config.token,
       aliveListener: () => onAlive(server),
     );
     // Register tools here.

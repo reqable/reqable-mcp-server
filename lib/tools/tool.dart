@@ -1,5 +1,6 @@
 const List<McpToolGroup> _kScopeMinimal = [
   McpToolGroup.captureLive,
+  McpToolGroup.captureRecord,
   McpToolGroup.captureBreakpoint,
   McpToolGroup.captureRewrite,
   McpToolGroup.captureScript,
@@ -11,6 +12,7 @@ const List<McpToolGroup> _kScopeAll = McpToolGroup.values;
 
 enum McpToolGroup {
   captureLive,
+  captureRecord,
   captureAccessControl,
   captureBreakpoint,
   captureGateway,

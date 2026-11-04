@@ -44,7 +44,13 @@ Configure the Reqable MCP server in your AI Agent, you can let the agent operate
 
 ## Tool Overview
 
-Reqable MCP providers more than one hundred MCP tools. They are grouped by capability below.
+Reqable MCP provides more than one hundred MCP tools. They are grouped by capability below. The `minimal` scope includes commonly used tools, while `all` includes every tool listed below.
+
+### Tabs
+
+| Tool | Description | Included in `minimal` |
+| --- | --- | --- |
+| `tab_list` | List all open Reqable tabs, including their IDs, types, and display names. | ✅ |
 
 ### HTTP Testing
 
@@ -53,6 +59,18 @@ Reqable MCP providers more than one hundred MCP tools. They are grouped by capab
 | `rest_http_create_from_url` | Create a new HTTP API tab from a URL. | ✅ |
 | `rest_http_create_from_curl` | Create a new HTTP API tab from a cURL command. | ✅ |
 | `rest_http_update` | Update an HTTP API using a full JSON payload. | ✅ |
+
+### HTTP Raw Testing
+
+| Tool | Description | Included in `minimal` |
+| --- | --- | --- |
+| `rest_raw_update` | Update an HTTP Raw API using a full JSON payload. | ✅ |
+
+### gRPC Testing
+
+| Tool | Description | Included in `minimal` |
+| --- | --- | --- |
+| `rest_grpc_update` | Update a gRPC API using a full JSON payload. | ✅ |
 
 ### WebSocket Testing
 
@@ -114,12 +132,19 @@ Reqable MCP providers more than one hundred MCP tools. They are grouped by capab
 | --- | --- | --- |
 | `capture_live_status` | Get the current live capture status. | ❌ |
 | `capture_live_set_enabled` | Start or stop live capture. | ✅ |
-| `capture_live_filter` | Filter live capture records and return matching record IDs. | ✅ |
-| `capture_live_get_by_id` | Get live capture record details by numeric ID. | ✅ |
 | `capture_live_clear` | Clear retained live capture records. | ❌ |
-| `capture_live_generate_curl` | Generate a cURL command from a live capture record. | ✅ |
-| `capture_live_compose` | Compose a live capture record into a new HTTP or WebSocket API tab. | ✅ |
-| `capture_live_collection_add` | Add a live capture record to a collection. | ✅ |
+
+### Capture Records
+
+Use `tab_list` to find the target capture tab ID, then pass it as `tabId` to the `capture_record_*` tools. Record IDs are scoped to a tab and may be reused across capture sessions. These tools replace the former `capture_live_*` record tools and can operate on records in live capture, temporary sessions, capture files, history, and favorites.
+
+| Tool | Description | Included in `minimal` |
+| --- | --- | --- |
+| `capture_record_filter` | Filter records in a specified tab and return matching record IDs; use an empty filters list to return all retained record IDs. | ✅ |
+| `capture_record_get_by_id` | Get full record details by tab ID and numeric record ID. | ✅ |
+| `capture_record_generate_curl` | Generate a cURL command for a record by tab ID and numeric record ID. | ✅ |
+| `capture_record_compose` | Compose a completed record into a new HTTP or WebSocket API tab and return the created API ID. | ✅ |
+| `capture_record_collection_add` | Add a completed record to an existing collection and return the created API details. | ✅ |
 
 ### SSL Proxying
 
@@ -153,32 +178,32 @@ Reqable MCP providers more than one hundred MCP tools. They are grouped by capab
 
 | Tool | Description | Included in `minimal` |
 | --- | --- | --- |
-| `capture_gateway_get_config` | Get the current gateway configuration. | ✅ |
-| `capture_gateway_set_enabled` | Enable or disable the gateway feature. | ✅ |
+| `capture_gateway_get_config` | Get the current gateway configuration. | ❌ |
+| `capture_gateway_set_enabled` | Enable or disable the gateway feature. | ❌ |
 | `capture_gateway_list` | List all gateway rules. | ❌ |
 | `capture_gateway_set_item_enabled` | Batch enable or disable specific gateways. | ❌ |
-| `capture_gateway_get_by_id` | Get gateway details by ID. | ✅ |
-| `capture_gateway_create` | Create a new gateway rule. | ✅ |
+| `capture_gateway_get_by_id` | Get gateway details by ID. | ❌ |
+| `capture_gateway_create` | Create a new gateway rule. | ❌ |
 | `capture_gateway_create_folder` | Create a gateway folder. | ❌ |
-| `capture_gateway_delete` | Delete one or more gateways. | ✅ |
+| `capture_gateway_delete` | Delete one or more gateways. | ❌ |
 | `capture_gateway_delete_folder` | Delete one or more gateway folders. | ❌ |
-| `capture_gateway_update` | Update a gateway rule. | ✅ |
+| `capture_gateway_update` | Update a gateway rule. | ❌ |
 | `capture_gateway_update_folder_name` | Rename a gateway folder. | ❌ |
 
 ### Mirrors
 
 | Tool | Description | Included in `minimal` |
 | --- | --- | --- |
-| `capture_mirror_get_config` | Get the current mirror configuration. | ✅ |
-| `capture_mirror_set_enabled` | Enable or disable the mirror feature. | ✅ |
+| `capture_mirror_get_config` | Get the current mirror configuration. | ❌ |
+| `capture_mirror_set_enabled` | Enable or disable the mirror feature. | ❌ |
 | `capture_mirror_list` | List all mirror rules. | ❌ |
 | `capture_mirror_set_item_enabled` | Batch enable or disable specific mirrors. | ❌ |
-| `capture_mirror_get_by_id` | Get mirror details by ID. | ✅ |
-| `capture_mirror_create` | Create a new mirror rule. | ✅ |
+| `capture_mirror_get_by_id` | Get mirror details by ID. | ❌ |
+| `capture_mirror_create` | Create a new mirror rule. | ❌ |
 | `capture_mirror_create_folder` | Create a mirror folder. | ❌ |
-| `capture_mirror_delete` | Delete one or more mirrors. | ✅ |
+| `capture_mirror_delete` | Delete one or more mirrors. | ❌ |
 | `capture_mirror_delete_folder` | Delete one or more mirror folders. | ❌ |
-| `capture_mirror_update` | Update a mirror rule. | ✅ |
+| `capture_mirror_update` | Update a mirror rule. | ❌ |
 | `capture_mirror_update_folder_name` | Rename a mirror folder. | ❌ |
 
 ### Rewrites

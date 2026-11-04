@@ -42,7 +42,13 @@ https://reqable.com/download/
 
 ## Tool 总览
 
-Reqable MCP 提供了上百个 MCP Tool，按功能分类如下。
+Reqable MCP 提供了上百个 MCP Tool，按功能分类如下。`minimal` 范围包含常用工具，`all` 范围包含下列全部工具。
+
+### 标签页
+
+| Tool | 功能 | 包含在 `minimal` |
+| --- | --- |--- |
+| `tab_list` | 列出全部已打开的 Reqable 标签页，包括 ID、类型和显示名称。 | ✅ |
 
 ### HTTP请求测试
 
@@ -51,6 +57,18 @@ Reqable MCP 提供了上百个 MCP Tool，按功能分类如下。
 | `rest_http_create_from_url` | 通过 URL 创建新的 HTTP API 标签页。 | ✅ |
 | `rest_http_create_from_curl` | 通过 cURL 创建新的 HTTP API 标签页。 | ✅ |
 | `rest_http_update` | 使用完整 JSON 载荷更新 HTTP API。 | ✅ |
+
+### HTTP Raw请求测试
+
+| Tool | 功能 | 包含在 `minimal` |
+| --- | --- |--- |
+| `rest_raw_update` | 使用完整 JSON 载荷更新 HTTP Raw API。 | ✅ |
+
+### gRPC请求测试
+
+| Tool | 功能 | 包含在 `minimal` |
+| --- | --- |--- |
+| `rest_grpc_update` | 使用完整 JSON 载荷更新 gRPC API。 | ✅ |
 
 ### WebSocket请求测试
 
@@ -112,12 +130,19 @@ Reqable MCP 提供了上百个 MCP Tool，按功能分类如下。
 | --- | --- |--- |
 | `capture_live_status` | 获取当前实时抓包状态。 | ❌ |
 | `capture_live_set_enabled` | 启动或停止实时抓包。 | ✅ |
-| `capture_live_filter` | 过滤当前抓包记录并返回匹配记录 ID。 | ✅ |
-| `capture_live_get_by_id` | 按数字 ID 获取抓包记录详情。 | ✅ |
 | `capture_live_clear` | 清空当前保存的实时抓包记录。 | ❌ |
-| `capture_live_generate_curl` | 为指定抓包记录生成 cURL 命令。 | ✅ |
-| `capture_live_compose` | 将抓包记录组装为新的 HTTP 或 WebSocket API 标签页。 | ✅ |
-| `capture_live_collection_add` | 将抓包记录加入指定 Collection。 | ✅ |
+
+### 抓包记录
+
+先调用 `tab_list` 获取目标抓包标签页 ID，再将其作为 `tabId` 传给 `capture_record_*` 工具。记录 ID 仅在所属标签页内定位记录，不同抓包会话可能重复使用相同 ID。这些工具替代原有的 `capture_live_*` 记录工具，可操作实时抓包、临时会话、抓包文件、历史记录和收藏中的记录。
+
+| Tool | 功能 | 包含在 `minimal` |
+| --- | --- |--- |
+| `capture_record_filter` | 过滤指定标签页中的记录并返回匹配记录 ID；传入空过滤条件列表可返回全部保留记录的 ID。 | ✅ |
+| `capture_record_get_by_id` | 按标签页 ID 和数字记录 ID 获取完整记录详情。 | ✅ |
+| `capture_record_generate_curl` | 按标签页 ID 和数字记录 ID 生成 cURL 命令。 | ✅ |
+| `capture_record_compose` | 将已完成的记录组装为新的 HTTP 或 WebSocket API 标签页，并返回新建的 API ID。 | ✅ |
+| `capture_record_collection_add` | 将已完成的记录加入现有 Collection，并返回新建的 API 详情。 | ✅ |
 
 ### SSL代理
 
@@ -151,32 +176,32 @@ Reqable MCP 提供了上百个 MCP Tool，按功能分类如下。
 
 | Tool | 功能 | 包含在 `minimal` |
 | --- | --- |--- |
-| `capture_gateway_get_config` | 获取网关功能的当前配置。 | ✅ |
-| `capture_gateway_set_enabled` | 启用或禁用网关功能。 | ✅ |
+| `capture_gateway_get_config` | 获取网关功能的当前配置。 | ❌ |
+| `capture_gateway_set_enabled` | 启用或禁用网关功能。 | ❌ |
 | `capture_gateway_list` | 列出全部网关规则。 | ❌ |
 | `capture_gateway_set_item_enabled` | 批量启用或禁用指定网关规则。 | ❌ |
-| `capture_gateway_get_by_id` | 按 ID 获取网关规则详情。 | ✅ |
-| `capture_gateway_create` | 创建新的网关规则。 | ✅ |
+| `capture_gateway_get_by_id` | 按 ID 获取网关规则详情。 | ❌ |
+| `capture_gateway_create` | 创建新的网关规则。 | ❌ |
 | `capture_gateway_create_folder` | 创建网关文件夹。 | ❌ |
-| `capture_gateway_delete` | 删除一个或多个网关规则。 | ✅ |
+| `capture_gateway_delete` | 删除一个或多个网关规则。 | ❌ |
 | `capture_gateway_delete_folder` | 删除一个或多个网关文件夹。 | ❌ |
-| `capture_gateway_update` | 更新网关规则。 | ✅ |
+| `capture_gateway_update` | 更新网关规则。 | ❌ |
 | `capture_gateway_update_folder_name` | 重命名网关文件夹。 | ❌ |
 
 ### 镜像
 
 | Tool | 功能 | 包含在 `minimal` |
 | --- | --- |--- |
-| `capture_mirror_get_config` | 获取镜像功能的当前配置。 | ✅ |
-| `capture_mirror_set_enabled` | 启用或禁用镜像功能。 | ✅ |
+| `capture_mirror_get_config` | 获取镜像功能的当前配置。 | ❌ |
+| `capture_mirror_set_enabled` | 启用或禁用镜像功能。 | ❌ |
 | `capture_mirror_list` | 列出全部镜像规则。 | ❌ |
 | `capture_mirror_set_item_enabled` | 批量启用或禁用指定镜像规则。 | ❌ |
-| `capture_mirror_get_by_id` | 按 ID 获取镜像规则详情。 | ✅ |
-| `capture_mirror_create` | 创建新的镜像规则。 | ✅ |
+| `capture_mirror_get_by_id` | 按 ID 获取镜像规则详情。 | ❌ |
+| `capture_mirror_create` | 创建新的镜像规则。 | ❌ |
 | `capture_mirror_create_folder` | 创建镜像文件夹。 | ❌ |
-| `capture_mirror_delete` | 删除一个或多个镜像规则。 | ✅ |
+| `capture_mirror_delete` | 删除一个或多个镜像规则。 | ❌ |
 | `capture_mirror_delete_folder` | 删除一个或多个镜像文件夹。 | ❌ |
-| `capture_mirror_update` | 更新镜像规则。 | ✅ |
+| `capture_mirror_update` | 更新镜像规则。 | ❌ |
 | `capture_mirror_update_folder_name` | 重命名镜像文件夹。 | ❌ |
 
 ### 重写

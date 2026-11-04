@@ -10,6 +10,7 @@ import 'package:reqable_mcp_server/config.dart';
 import 'package:reqable_mcp_server/tools/capture/live.dart';
 import 'package:reqable_mcp_server/tools/capture/mirror.dart';
 import 'package:reqable_mcp_server/tools/capture/network_throttling.dart';
+import 'package:reqable_mcp_server/tools/capture/record.dart';
 import 'package:reqable_mcp_server/tools/capture/report_server.dart';
 import 'package:reqable_mcp_server/tools/capture/reverse_proxy.dart';
 import 'package:reqable_mcp_server/tools/capture/secondary_proxy.dart';
@@ -24,6 +25,7 @@ import 'package:reqable_mcp_server/tools/rest/http.dart';
 import 'package:reqable_mcp_server/tools/rest/raw.dart';
 import 'package:reqable_mcp_server/tools/rest/websocket.dart';
 import 'package:reqable_mcp_server/tools/script.dart';
+import 'package:reqable_mcp_server/tools/tab/tab.dart';
 import 'package:reqable_mcp_server/version.g.dart';
 
 abstract class Application {
@@ -62,7 +64,9 @@ abstract class Application {
       aliveListener: () => onAlive(server),
     );
     // Register tools here.
+    registerTabTools(server, apiClient);
     registerCaptureLiveTools(server, apiClient, config.scope);
+    registerCaptureRecordTools(server, apiClient, config.scope);
     registerCaptureMirrorTools(server, apiClient, config.scope);
     registerCaptureGatewayTools(server, apiClient, config.scope);
     registerCaptureBreakpointTools(server, apiClient, config.scope);
